@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const http = axios.create({
-  baseURL: "https://fam-api.onrender.com",
+  baseURL: "fam-api-production.up.railway.app",
   headers: {
     "Content-Type": "application/json",
   },
