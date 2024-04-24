@@ -88,6 +88,9 @@ export const PaymentForm = ({ onCloseModal }) => {
         payed: payed,
       };
       await createPayement.mutateAsync(payload);
+      if (createPayement.isSuccess) {
+        onCloseModal();
+      }
     } catch (error) {
       console.log(error);
     } finally {
