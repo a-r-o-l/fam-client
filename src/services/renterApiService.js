@@ -1,7 +1,7 @@
 import { http } from "./http";
 
-const getRenter = async (id) => {
-  const response = await http.get(`/renters/${id}`);
+const getRenter = async (params) => {
+  const response = await http.get(`/renters/${params.id}`);
   if (response?.data) {
     return response.data;
   } else {
@@ -9,7 +9,18 @@ const getRenter = async (id) => {
   }
 };
 
-const getRenters = async () => {
+const getRenterByContract = async (params) => {
+  const response = await http.get(
+    `/renter/contract/${params.activeContractId}`
+  );
+  if (response?.data) {
+    return response.data;
+  } else {
+    return false;
+  }
+};
+
+const getRenters = async (data) => {
   const response = await http.get(`/renters`);
   if (response?.data) {
     return response.data;
@@ -51,4 +62,5 @@ export const renterApiService = {
   createRenter,
   updateRenter,
   deleteRenter,
+  getRenterByContract,
 };
