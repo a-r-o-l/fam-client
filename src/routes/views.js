@@ -3,11 +3,12 @@ import { BuildingScreen } from "../Screens/Building/BuildingScreen";
 import { RentersScreen } from "../Screens/Renters/RentersScreen";
 import { RenterScreen } from "../Screens/Renter/RenterScreen";
 import { AnalitycsScreen } from "../Screens/Analitycs/AnalitycsScreen";
+import { WorkInProgressScreen } from "../Screens/WorkInProgress/WorkInProgressScreen";
 const views = [
   {
-    path: "/",
+    path: "/analitycs",
     name: "Analiticas",
-    component: AnalitycsScreen,
+    component: WorkInProgressScreen,
   },
   {
     path: "/payments",
@@ -29,7 +30,7 @@ const views = [
   {
     path: "/opciones",
     name: "Opciones",
-    component: RentersScreen,
+    component: WorkInProgressScreen,
   },
   {
     path: "/renter/:id",
