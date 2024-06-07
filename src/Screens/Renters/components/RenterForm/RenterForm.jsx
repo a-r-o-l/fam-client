@@ -55,10 +55,13 @@ export const RenterForm = ({ onCancel, renter = null }) => {
 
     try {
       // Reemplaza 'http://localhost:3000/upload' con la URL de tu endpoint
-      const response = await fetch("http://localhost:3000/uploads", {
-        method: "POST",
-        body: data,
-      });
+      const response = await fetch(
+        "https://fam-api-production.up.railway.app/uploads",
+        {
+          method: "POST",
+          body: data,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error al subir el archivo");
