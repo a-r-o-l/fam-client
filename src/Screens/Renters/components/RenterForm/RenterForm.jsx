@@ -7,7 +7,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Flex, NumberInput, TextInput, Fieldset } from "@mantine/core";
 import { FaFingerprint, FaMobileScreen, FaRegUser } from "react-icons/fa6";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ImagePicker } from "../../../../components/Inputs/ImagePicker";
 import { toast } from "sonner";
 import { HiAtSymbol } from "react-icons/hi";
@@ -35,6 +35,7 @@ const schema = yup
   .required();
 
 export const RenterForm = ({ onCancel, renter = null }) => {
+  const fileInputRef = useRef(null);
   const createRenter = useCreateRenterMutation();
   const updateRenter = useUpdateRenterMutation();
   const [localImage, setLocalImage] = useState(null);
@@ -44,6 +45,30 @@ export const RenterForm = ({ onCancel, renter = null }) => {
     const files = e.target.files;
     const file = files[0];
     setLocalImage(file);
+  };
+
+  const onImageChange2 = async (e) => {
+    const files = e.target.files;
+    const file = files[0];
+    const data = new FormData();
+    data.append("image", file);
+
+    try {
+      // Reemplaza 'http://localhost:3000/upload' con la URL de tu endpoint
+      const response = await fetch("http://localhost:3000/uploads", {
+        method: "POST",
+        body: data,
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al subir el archivo");
+      }
+
+      const responseData = await response.json();
+      console.log(responseData); // Aquí puedes manejar la respuesta del servidor
+    } catch (error) {
+      console.error(error); // Aquí puedes manejar los errores
+    }
   };
 
   const srcImg = useMemo(() => {
@@ -98,6 +123,7 @@ export const RenterForm = ({ onCancel, renter = null }) => {
             dni: data.dni.toString(),
           },
         });
+        console.log(response);
         toast.success("Inquilino actualizado correctamente");
       } else {
         createRenter.mutateAsync(payload);
@@ -265,6 +291,14 @@ export const RenterForm = ({ onCancel, renter = null }) => {
         ) : (
           <></>
         )}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          // style={{ display: "none" }}
+          onChange={onImageChange2}
+        />
+
         <Button radius="xl" w={150} size="sm" type="submit" loading={creating}>
           Guardar
         </Button>

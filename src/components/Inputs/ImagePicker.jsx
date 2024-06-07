@@ -1,6 +1,6 @@
 import { ActionIcon } from "@mantine/core";
 import { Avatar } from "@mui/material";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { FaCamera } from "react-icons/fa6";
 import { LuLoader2 } from "react-icons/lu";
 

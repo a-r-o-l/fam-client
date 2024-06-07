@@ -115,6 +115,59 @@ export const AppTemplate = () => {
     setPassword("");
   }, [isLogged]);
 
+  if (!isLogged) {
+    return (
+      <div className="flex flex-1 justify-center items-center py-40 h-screen">
+        <Card
+          withBorder
+          styles={{
+            root: {
+              padding: 60,
+              backgroundColor: "transparent",
+              width: 400,
+            },
+          }}
+        >
+          <div className="flex flex-col items-center gap-10">
+            <div className="w-20 h-20 rounded-full overflow-hidden flex justify-center items-center dark:border-fam_blue-8 border-fam_blue-8 border-4">
+              <Image src="./fam-logo4.jpg" fit="cover" h={80} w={100} />
+            </div>
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-black dark:text-white">
+              Iniciar session
+            </h3>
+            <div className="w-full">
+              <TextInput
+                withAsterisk
+                leftSectionPointerEvents="none"
+                leftSection={<FaKey />}
+                label="Password"
+                autoFocus
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                disabled={logging}
+                size="md"
+              />
+            </div>
+            <div className="mt-20 w-full">
+              <Button
+                onClick={handlerLoggin}
+                loading={logging}
+                disabled={logging}
+                variant="filled"
+                radius="xl"
+                size="md"
+                fullWidth
+              >
+                Ingresar
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <AppShell
       header={{ height: 150 }}
@@ -173,101 +226,48 @@ export const AppTemplate = () => {
           </div>
         </Group>
       </AppShell.Header>
-      {isLogged && (
-        <AppShell.Navbar p="md">
-          {views?.map((view, index) => {
-            if (!view.name) {
-              return null;
-            }
-            return (
-              <NavLink
-                align="left"
-                to={view.path}
-                key={index}
-                onClick={() => {
-                  setOpened(false);
-                }}
-                className={({ isActive }) => {
-                  if (isActive) {
-                    setTitle(view.name);
-                  }
-                  return (
-                    classes.navLink +
-                    " " +
-                    (isActive ? classes.navLinkActive : "")
-                  );
-                }}
-              >
-                <Group>
-                  {view.name === "Pagos" && <PiMoneyLight fontSize={25} />}
-                  {view.name === "Complejos" && <LiaBuilding fontSize={25} />}
-                  {view.name === "Inquilinos" && (
-                    <MdPeopleOutline fontSize={25} />
-                  )}
-                  {view.name === "Analiticas" && <IoAnalytics fontSize={25} />}
-                  {view.name === "Opciones" && (
-                    <GiSettingsKnobs fontSize={25} />
-                  )}
-                  <Text size="xl">{view.name}</Text>
-                </Group>
-              </NavLink>
-            );
-          })}
-        </AppShell.Navbar>
-      )}
-      <AppShell.Main>
-        {isLogged ? (
-          <Router />
-        ) : (
-          <div className="flex flex-1 justify-center items-center py-40">
-            <Card
-              withBorder
-              styles={{
-                root: {
-                  padding: 60,
-                  backgroundColor: "transparent",
-                  width: 400,
-                },
+
+      <AppShell.Navbar p="md">
+        {views?.map((view, index) => {
+          if (!view.name) {
+            return null;
+          }
+          return (
+            <NavLink
+              align="left"
+              to={view.path}
+              key={index}
+              onClick={() => {
+                setOpened(false);
+              }}
+              className={({ isActive }) => {
+                if (isActive) {
+                  setTitle(view.name);
+                }
+                return (
+                  classes.navLink +
+                  " " +
+                  (isActive ? classes.navLinkActive : "")
+                );
               }}
             >
-              <div className="flex flex-col items-center gap-10">
-                <div className="w-20 h-20 rounded-full overflow-hidden flex justify-center items-center dark:border-fam_blue-8 border-fam_blue-8 border-4">
-                  <Image src="./fam-logo4.jpg" fit="cover" h={80} w={100} />
-                </div>
-                <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-black dark:text-white">
-                  Iniciar session
-                </h3>
-                <div className="w-full">
-                  <TextInput
-                    withAsterisk
-                    leftSectionPointerEvents="none"
-                    leftSection={<FaKey />}
-                    label="Password"
-                    autoFocus
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    type="password"
-                    disabled={logging}
-                    size="md"
-                  />
-                </div>
-                <div className="mt-20 w-full">
-                  <Button
-                    onClick={handlerLoggin}
-                    loading={logging}
-                    disabled={logging}
-                    variant="filled"
-                    radius="xl"
-                    size="md"
-                    fullWidth
-                  >
-                    Ingresar
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          </div>
-        )}
+              <Group>
+                {view.name === "Pagos" && <PiMoneyLight fontSize={25} />}
+                {view.name === "Complejos" && <LiaBuilding fontSize={25} />}
+                {view.name === "Inquilinos" && (
+                  <MdPeopleOutline fontSize={25} />
+                )}
+                {view.name === "Analiticas" && <IoAnalytics fontSize={25} />}
+                {view.name === "Opciones" && <GiSettingsKnobs fontSize={25} />}
+                <Text size="xl">{view.name}</Text>
+              </Group>
+            </NavLink>
+          );
+        })}
+      </AppShell.Navbar>
+
+      <AppShell.Main>
+        <Router />
       </AppShell.Main>
     </AppShell>
   );
