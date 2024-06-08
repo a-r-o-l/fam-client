@@ -2,12 +2,13 @@ import {
   useCreateRenterMutation,
   useUpdateRenterMutation,
 } from "../../../../services/hooks/Renter/useRenterMutation";
+import { useDeleteImageMutation } from "../../../../services/hooks/images/useImagesMutation";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Flex, NumberInput, TextInput, Fieldset } from "@mantine/core";
 import { FaFingerprint, FaMobileScreen, FaRegUser } from "react-icons/fa6";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ImagePicker } from "../../../../components/Inputs/ImagePicker";
 import { toast } from "sonner";
 import { HiAtSymbol } from "react-icons/hi";
@@ -35,9 +36,9 @@ const schema = yup
   .required();
 
 export const RenterForm = ({ onCancel, renter = null }) => {
-  const fileInputRef = useRef(null);
   const createRenter = useCreateRenterMutation();
   const updateRenter = useUpdateRenterMutation();
+  const deleteImage = useDeleteImageMutation();
   const [localImage, setLocalImage] = useState(null);
   const [creating, setCreating] = useState(false);
 
@@ -47,32 +48,33 @@ export const RenterForm = ({ onCancel, renter = null }) => {
     setLocalImage(file);
   };
 
-  const onImageChange2 = async (e) => {
-    const files = e.target.files;
-    const file = files[0];
-    const data = new FormData();
-    data.append("image", file);
+  // const onImageChange2 = async (e) => {
+  //   const files = e.target.files;
+  //   const file = files[0];
 
-    try {
-      // Reemplaza 'http://localhost:3000/upload' con la URL de tu endpoint
-      const response = await fetch(
-        "https://fam-api-production.up.railway.app/uploads",
-        {
-          method: "POST",
-          body: data,
-        }
-      );
+  //   const data = new FormData();
+  //   data.append("image", file);
 
-      if (!response.ok) {
-        throw new Error("Error al subir el archivo");
-      }
+  //   try {
+  //     // Reemplaza 'http://localhost:3000/upload' con la URL de tu endpoint
+  //     const response = await fetch(
+  //       "https://fam-api-production.up.railway.app/uploads",
+  //       {
+  //         method: "POST",
+  //         body: data,
+  //       }
+  //     );
 
-      const responseData = await response.json();
-      console.log(responseData); // Aquí puedes manejar la respuesta del servidor
-    } catch (error) {
-      console.error(error); // Aquí puedes manejar los errores
-    }
-  };
+  //     if (!response.ok) {
+  //       throw new Error("Error al subir el archivo");
+  //     }
+
+  //     const responseData = await response.json();
+  //     console.log(responseData); // Aquí puedes manejar la respuesta del servidor
+  //   } catch (error) {
+  //     console.error(error); // Aquí puedes manejar los errores
+  //   }
+  // };
 
   const srcImg = useMemo(() => {
     if (localImage) {
@@ -98,27 +100,46 @@ export const RenterForm = ({ onCancel, renter = null }) => {
 
   const onSubmit = async (data) => {
     setCreating(true);
-    let imgUrl;
     let payload = { ...data };
     try {
       if (localImage) {
         const data = new FormData();
-        data.append("file", localImage);
-        data.append("upload_preset", "images");
-        const res = await fetch(
-          "https://api.cloudinary.com/v1_1/dbb2vknkm/image/upload",
-          {
-            method: "POST",
-            body: data,
-          }
-        );
-        imgUrl = await res.json();
-        if (imgUrl?.secure_url) {
-          payload.image_url = imgUrl?.secure_url;
-        }
-      }
+        data.append("image", localImage);
+        try {
+          const response = await fetch(
+            "https://fam-api-production.up.railway.app/uploads",
+            {
+              method: "POST",
+              body: data,
+            }
+          );
 
+          if (!response.ok) {
+            throw new Error("Error al subir el archivo");
+          }
+          const responseData = await response.json();
+          payload.image_url = responseData.imageUrl;
+        } catch (error) {
+          console.error(error);
+        }
+        // data.append("file", localImage);
+        // data.append("upload_preset", "images");
+        // const res = await fetch(
+        //   "https://api.cloudinary.com/v1_1/dbb2vknkm/image/upload",
+        //   {
+        //     method: "POST",
+        //     body: data,
+        //   }
+        // );
+        // imgUrl = await res.json();
+        // if (imgUrl?.secure_url) {
+        //   payload.image_url = imgUrl?.secure_url;
+        // }
+      }
       if (renter) {
+        if (renter.imageUrl) {
+          deleteImage.mutateAsync(renter.imageUrl);
+        }
         const response = updateRenter.mutateAsync({
           id: renter.id,
           data: {
@@ -294,13 +315,13 @@ export const RenterForm = ({ onCancel, renter = null }) => {
         ) : (
           <></>
         )}
-        <input
+        {/* <input
           ref={fileInputRef}
           type="file"
           accept="image/*"
           // style={{ display: "none" }}
           onChange={onImageChange2}
-        />
+        /> */}
 
         <Button radius="xl" w={150} size="sm" type="submit" loading={creating}>
           Guardar
