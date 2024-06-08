@@ -8,7 +8,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Flex, NumberInput, TextInput, Fieldset } from "@mantine/core";
 import { FaFingerprint, FaMobileScreen, FaRegUser } from "react-icons/fa6";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ImagePicker } from "../../../../components/Inputs/ImagePicker";
 import { toast } from "sonner";
 import { HiAtSymbol } from "react-icons/hi";
@@ -48,6 +48,11 @@ export const RenterForm = ({ onCancel, renter = null }) => {
     const file = files[0];
     setLocalImage(file);
   };
+
+  const getFileNameFromUrl = useCallback((url) => {
+    const urlObject = new URL(url);
+    return urlObject.pathname.split("/").pop();
+  }, []);
 
   // const onImageChange2 = async (e) => {
   //   const files = e.target.files;
@@ -139,7 +144,7 @@ export const RenterForm = ({ onCancel, renter = null }) => {
       }
       if (renter) {
         if (renter.image_url) {
-          const imageName = path.basename(renter.image_url);
+          const imageName = getFileNameFromUrl(renter.image_url);
           const deletedImage = await deleteImage.mutateAsync(imageName);
           console.log("deletedImage-> ", deletedImage);
         }
