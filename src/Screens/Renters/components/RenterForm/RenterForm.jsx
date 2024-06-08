@@ -137,10 +137,6 @@ export const RenterForm = ({ onCancel, renter = null }) => {
         // }
       }
       if (renter) {
-        if (renter.image_url) {
-          const imageName = getFileNameFromUrl(renter.image_url);
-          await deleteImage.mutateAsync(imageName);
-        }
         await updateRenter.mutateAsync({
           id: renter.id,
           data: {
@@ -149,6 +145,10 @@ export const RenterForm = ({ onCancel, renter = null }) => {
           },
         });
         toast.success("Inquilino actualizado correctamente");
+        if (renter.image_url) {
+          const imageName = getFileNameFromUrl(renter.image_url);
+          await deleteImage.mutateAsync(imageName);
+        }
       } else {
         await createRenter.mutateAsync(payload);
         toast.success("Inquilino creado correctamente");
