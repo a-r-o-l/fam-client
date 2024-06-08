@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { HiAtSymbol } from "react-icons/hi";
 import { Input } from "@mantine/core";
 import { IMaskInput } from "react-imask";
+import path from "path";
 
 const defaultValues = {
   name: "",
@@ -138,7 +139,8 @@ export const RenterForm = ({ onCancel, renter = null }) => {
       }
       if (renter) {
         if (renter.image_url) {
-          const deletedImage = await deleteImage.mutateAsync(renter.imageUrl);
+          const imageName = path.basename(renter.image_url);
+          const deletedImage = await deleteImage.mutateAsync(imageName);
           console.log("deletedImage-> ", deletedImage);
         }
         await updateRenter.mutateAsync({
