@@ -138,19 +138,20 @@ export const RenterForm = ({ onCancel, renter = null }) => {
       }
       if (renter) {
         if (renter.imageUrl) {
-          deleteImage.mutateAsync(renter.imageUrl);
+          const deletedImage = await deleteImage.mutateAsync(renter.imageUrl);
+          console.log("deletedImage-> ", deletedImage);
         }
-        const response = updateRenter.mutateAsync({
+        const response = await updateRenter.mutateAsync({
           id: renter.id,
           data: {
             ...payload,
             dni: data.dni.toString(),
           },
         });
-        console.log(response);
+        console.log("response-> ", response);
         toast.success("Inquilino actualizado correctamente");
       } else {
-        createRenter.mutateAsync(payload);
+        await createRenter.mutateAsync(payload);
         if (createRenter.isError) {
           toast.error(createRenter.error.response.data.message);
           setError("apartment", {
