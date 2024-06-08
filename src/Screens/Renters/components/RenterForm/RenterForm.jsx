@@ -50,8 +50,7 @@ export const RenterForm = ({ onCancel, renter = null }) => {
   };
 
   const getFileNameFromUrl = useCallback((url) => {
-    const urlObject = new URL(url);
-    return urlObject.pathname.split("/").pop();
+    return url.substring(url.lastIndexOf("/") + 1);
   }, []);
 
   // const onImageChange2 = async (e) => {
@@ -95,7 +94,6 @@ export const RenterForm = ({ onCancel, renter = null }) => {
 
   const {
     reset,
-    setError,
     control,
     handleSubmit,
     formState: { errors },
@@ -119,10 +117,6 @@ export const RenterForm = ({ onCancel, renter = null }) => {
               body: data,
             }
           );
-
-          if (!response.ok) {
-            throw new Error("Error al subir el archivo");
-          }
           const responseData = await response.json();
           payload.image_url = responseData.imageUrl;
         } catch (error) {
@@ -145,8 +139,7 @@ export const RenterForm = ({ onCancel, renter = null }) => {
       if (renter) {
         if (renter.image_url) {
           const imageName = getFileNameFromUrl(renter.image_url);
-          const deletedImage = await deleteImage.mutateAsync(imageName);
-          console.log("deletedImage-> ", deletedImage);
+          await deleteImage.mutateAsync(imageName);
         }
         await updateRenter.mutateAsync({
           id: renter.id,
@@ -158,14 +151,6 @@ export const RenterForm = ({ onCancel, renter = null }) => {
         toast.success("Inquilino actualizado correctamente");
       } else {
         await createRenter.mutateAsync(payload);
-        if (createRenter.isError) {
-          toast.error(createRenter.error.response.data.message);
-          setError("apartment", {
-            type: "manual",
-            message: "Departamento no disponible",
-          });
-          return;
-        }
         toast.success("Inquilino creado correctamente");
         onCancel();
       }
