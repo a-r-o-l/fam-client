@@ -8,11 +8,20 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { TextInput, Button, Text, NumberInput } from "@mantine/core";
 import { useEffect } from "react";
 import { FaBuilding, FaLocationDot, FaBed } from "react-icons/fa6";
+import { toast } from "sonner";
 
 const schema = yup.object({
   name: yup.string().required("El nombre es requerido"),
   address: yup.string().required("La dirección es requerida"),
-  apartments: yup.number().required("la cantidad de deptos es requerida"),
+  apartments: yup
+    .number()
+    .transform((value, originalValue) => {
+      return typeof originalValue === "string" && originalValue.trim() === ""
+        ? undefined
+        : value;
+    })
+    .min(1, "El número de apartamentos no puede ser 0")
+    .required("la cantidad de deptos es requerida"),
 });
 
 export const BuildingForm = ({ building }) => {
@@ -23,18 +32,28 @@ export const BuildingForm = ({ building }) => {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({
     resolver: yupResolver(schema),
   });
 
   const onSubmit = async (data) => {
-    if (building) {
-      updateBuilding.mutateAsync({ id: building.id, data });
-
-      return;
+    try {
+      if (building) {
+        await updateBuilding.mutateAsync({ id: building.id, data });
+        toast.success("Complejo actualizado con éxito");
+        return;
+      }
+      await createBuilding.mutateAsync(data);
+      toast.success("Complejo registrado con éxito");
+    } catch (error) {
+      console.log("error-> ", error.response.status);
+      if (error.response.status === 410) {
+        toast.error(
+          "No se pueden eliminar departamentos con un contrato activo"
+        );
+      }
     }
-    createBuilding.mutateAsync(data);
   };
 
   useEffect(() => {
@@ -42,7 +61,7 @@ export const BuildingForm = ({ building }) => {
       const { name, address, apartments } = building;
       reset({ name, address, apartments });
     } else {
-      reset({ name: "", address: "", apartments: 1 });
+      reset({ name: "", address: "", apartments: "" });
     }
   }, [building, reset]);
 
@@ -120,6 +139,7 @@ export const BuildingForm = ({ building }) => {
             type="submit"
             color="blue"
             variant="light"
+            disabled={!isDirty}
             loading={createBuilding.isPending || updateBuilding.isPending}
           >
             {building ? "Guardar" : "Registrar"}

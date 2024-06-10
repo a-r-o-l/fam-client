@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { textFormat } from "../../../utils/textFormat";
-import { useNavigate } from "react-router-dom";
 import { useUpdatePaymentMutation } from "../../../services/hooks/Payment/usePaymentMutation";
 import { AlertDialog } from "../../../components/Dialog/AlertDialog";
 import { toast } from "sonner";
@@ -12,7 +11,6 @@ import {
   Avatar,
   Text,
   useMantineColorScheme,
-  Grid,
 } from "@mantine/core";
 import {
   FaBuilding,
@@ -26,7 +24,6 @@ export const PaymentCard = ({ payment }) => {
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const updatePayment = useUpdatePaymentMutation();
-  const navigate = useNavigate();
 
   const switchColor = useMemo(() => {
     return colorScheme === "dark" ? "white" : "black";
@@ -42,10 +39,6 @@ export const PaymentCard = ({ payment }) => {
   const building = useMemo(() => {
     return renter.Building || null;
   }, [renter]);
-
-  const isPaid = useMemo(() => {
-    return payment?.paid;
-  }, [payment]);
 
   const onConfirm = useCallback(
     (e) => {
@@ -166,91 +159,6 @@ export const PaymentCard = ({ payment }) => {
         acceptTitle="Aceptar"
         onConfirm={onConfirm}
       />
-    </div>
-  );
-  return (
-    <div className="w-full flex border flex-row h-20">
-      <div className="bg-red-900 flex flex-col basis-1/2 justify-center">
-        <div className="flex-row flex border">
-          <FaDoorClosed color={switchColor} />
-          <Text c="blue" fw={900} size="lg">
-            {renter.apartment}
-          </Text>
-        </div>
-        <div className="flex-row flex border">
-          <FaBuilding color={switchColor} />
-          <Text c="blue">{building?.name}</Text>
-        </div>
-      </div>
-      <div className="bg-blue-900 flex basis-1/2 items-center">
-        <SiCashapp
-          className="w-5 h-5 max-lg:hidden"
-          color={colorScheme === "dark" ? "white" : "black"}
-        />
-        <Text>{payment?.fee || "0.00"}</Text>
-      </div>
-      <div className="bg-green-900 flex basis-1/2 items-center grow">
-        <div className="">
-          <Avatar
-            alt={renter?.name + " " + renter?.lastname}
-            src={renter?.image}
-            sx={{ width: rem(160), height: rem(160) }}
-            className=""
-          />
-        </div>
-        <div className="">
-          <Text className="">
-            {textFormat([renter?.name, renter?.lastname], "allcapitalize")}
-          </Text>
-        </div>
-      </div>
-      <div className="bg-yellow-900 flex basis-1/2 justify-between items-center">
-        <div className="">
-          <Text>{dayjs(payment?.date).format("DD/MM/YYYY")}</Text>
-        </div>
-        <div className="">
-          <Switch
-            size="lg"
-            onLabel="SALDADO"
-            offLabel="PENDIENTE"
-            color="teal"
-            checked={payed}
-            styles={{
-              track: {
-                backgroundColor: !payed ? "red" : "",
-                color: "white",
-              },
-            }}
-            onChange={(e) => {
-              e.stopPropagation();
-              if (!e.target.checked) {
-                setOpenAlert(true);
-                return;
-              } else {
-                onConfirm(e);
-              }
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            thumbIcon={
-              payed ? (
-                <FaCircleCheck
-                  style={{ width: rem(20), height: rem(20) }}
-                  color={theme.colors.teal[6]}
-                  stroke={3}
-                />
-              ) : (
-                <FaCircleXmark
-                  style={{ width: rem(20), height: rem(20) }}
-                  color={theme.colors.red[6]}
-                  stroke={3}
-                />
-              )
-            }
-          />
-        </div>
-      </div>
     </div>
   );
 };

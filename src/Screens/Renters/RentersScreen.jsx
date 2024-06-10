@@ -68,7 +68,7 @@ export const RentersScreen = () => {
   }, [data, check]);
 
   const rentersByBuilding = useMemo(() => {
-    if (!!selectedBuilding?.length) {
+    if (selectedBuilding?.length) {
       return rentersByContracts.filter((renter) => {
         const contractId = renter?.activeContractId;
         const contract = renter?.Contracts.find((c) => c.id === contractId);
@@ -126,7 +126,7 @@ export const RentersScreen = () => {
               placeholder="Buscar inquilino"
               leftSection={<FaUserLarge />}
               rightSection={
-                !!searchParam ? (
+                searchParam ? (
                   <FaCircleXmark
                     className="cursor-pointer bg-transparent"
                     onClick={(e) => {

@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Avatar, Indicator, Table, Text } from "@mantine/core";
 import { textFormat } from "../../../../utils/textFormat";
 import dayjs from "dayjs";
 import { CustomProgress } from "../../../../components/Progress/CustomProgress";
 import { RenterRowMenu } from "./RenterRowMenu";
 
-export const RenterRowItem = ({ item, onHistoryClick, onEdit }) => {
+export const RenterRowItem = ({ item, onHistoryClick, onEdit, onDelete }) => {
   const contract = useMemo(() => {
     if (item?.Contracts?.length) {
       const contract = item?.Contracts.find(

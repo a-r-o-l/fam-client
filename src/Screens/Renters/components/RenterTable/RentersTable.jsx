@@ -1,9 +1,10 @@
-import { Table, useMantineColorScheme, useMantineTheme } from "@mantine/core";
-import React from "react";
+import { Table, useMantineColorScheme } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { useDeleteRenterMutation } from "../../../../services/hooks/Renter/useRenterMutation";
-import dayjs from "dayjs";
 import { RenterRowItem } from "./RenterRowItem";
+import { useState } from "react";
+import { CustomDialog } from "../../../../components/Dialog/CustomDialog";
+import { toast } from "sonner";
 
 const headerItems = [
   { id: 1, label: "Avatar" },
@@ -25,6 +26,8 @@ export const RentersTable = ({ renters }) => {
   const navigate = useNavigate();
   const deleteRenter = useDeleteRenterMutation();
   const { colorScheme } = useMantineColorScheme();
+  const [renterToDelete, setRenterToDelete] = useState(null);
+  const [openAlert, setOpenAlert] = useState(false);
 
   const onEdit = (itemId) => {
     navigate(`/renter/${itemId}`);
@@ -34,9 +37,24 @@ export const RentersTable = ({ renters }) => {
     console.log("report");
   };
 
-  const onDelete = async (id) => {
-    deleteRenter.mutate(id);
-    console.log("delete");
+  const onDelete = async () => {
+    try {
+      await deleteRenter.mutateAsync(renterToDelete);
+    } catch (error) {
+      if (error.response.status === 410) {
+        toast.error(
+          "No se pueden eliminar un inquilino con un contrato activo"
+        );
+      }
+    } finally {
+      setRenterToDelete(null);
+      setOpenAlert(false);
+    }
+  };
+
+  const onPrevDelete = async (id) => {
+    setRenterToDelete(id);
+    setOpenAlert(true);
   };
 
   return (
@@ -52,14 +70,14 @@ export const RentersTable = ({ renters }) => {
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {!!renters ? (
+          {renters ? (
             renters.map((item) => (
               <RenterRowItem
                 item={item}
                 key={item.id}
                 onHistoryClick={onHistoryClick}
                 onEdit={onEdit}
-                onDelete={onDelete}
+                onDelete={onPrevDelete}
               />
             ))
           ) : (
@@ -67,6 +85,12 @@ export const RentersTable = ({ renters }) => {
           )}
         </Table.Tbody>
       </Table>
+      <CustomDialog
+        open={openAlert}
+        onClose={() => setOpenAlert(false)}
+        onConfirm={onDelete}
+        text="Estas seguro de eliminar un inquilino?"
+      />
     </Table.ScrollContainer>
   );
 };

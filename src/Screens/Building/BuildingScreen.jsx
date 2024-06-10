@@ -9,7 +9,7 @@ export const BuildingScreen = () => {
   const [selectedBuilding, setSelectedBuilding] = useState(null);
 
   const { data: buildings } = useGetBuildingsQuery();
-  const { colorScheme, setColorScheme } = useMantineColorScheme();
+  const { colorScheme } = useMantineColorScheme();
 
   const isDark = useMemo(() => {
     return colorScheme === "dark";

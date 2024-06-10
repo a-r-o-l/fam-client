@@ -4,6 +4,7 @@ import { RentersScreen } from "../Screens/Renters/RentersScreen";
 import { RenterScreen } from "../Screens/Renter/RenterScreen";
 import { AnalitycsScreen } from "../Screens/Analitycs/AnalitycsScreen";
 import { WorkInProgressScreen } from "../Screens/WorkInProgress/WorkInProgressScreen";
+import { OptionsScreen } from "../Screens/Options/OptionsScreen";
 const views = [
   {
     path: "/analitycs",
@@ -30,7 +31,7 @@ const views = [
   {
     path: "/opciones",
     name: "Opciones",
-    component: WorkInProgressScreen,
+    component: OptionsScreen,
   },
   {
     path: "/renter/:id",

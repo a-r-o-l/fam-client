@@ -3,7 +3,7 @@ import { textFormat } from "../../utils/textFormat";
 import { useGetPaymentQuery } from "../../services/hooks/Payment/usePaymentQuery";
 import { useGetRentersQuery } from "../../services/hooks/Renter/useRenterQuery";
 import { useGetBuildingsQuery } from "../../services/hooks/Building/useBuildingQuery";
-import { FaPlug, FaPlus, FaUserLarge } from "react-icons/fa6";
+import { FaPlus, FaUserLarge } from "react-icons/fa6";
 import { FaBuilding } from "react-icons/fa6";
 import {
   Checkbox,
@@ -97,8 +97,8 @@ export const PaymentsScreen = () => {
   }, [selectedBuilding, rentersData]);
 
   const paymentsByBuilding = useMemo(() => {
-    if (!!paymentsData?.length) {
-      if (!!selectedBuilding?.length) {
+    if (paymentsData?.length) {
+      if (selectedBuilding?.length) {
         return paymentsData.filter((payment) => {
           const contract = payment?.Contract;
           const apartment = contract?.Apartment;
@@ -112,7 +112,7 @@ export const PaymentsScreen = () => {
   }, [selectedBuilding, paymentsData]);
 
   const paymentsByRenter = useMemo(() => {
-    if (!!paymentsByBuilding?.length) {
+    if (paymentsByBuilding?.length) {
       if (!!selectedRenter && selectedRenter !== "all") {
         return paymentsByBuilding?.filter(
           (payment) => payment?.Contract?.renterId === parseInt(selectedRenter)
