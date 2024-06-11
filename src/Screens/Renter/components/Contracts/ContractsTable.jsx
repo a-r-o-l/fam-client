@@ -13,7 +13,7 @@ const headerTitles = [
 ];
 
 export const ContractsTable = ({ contracts }) => {
-  const deleteContract = useDeleteContractMutation();
+  // const deleteContract = useDeleteContractMutation();
   const today = dayjs();
 
   return (
@@ -27,13 +27,13 @@ export const ContractsTable = ({ contracts }) => {
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {!!contracts?.length ? (
-            contracts?.map((contract, index) => (
+          {contracts?.length ? (
+            contracts?.map((contract) => (
               <Table.Tr
                 key={contract?.id}
-                onClick={async () => {
-                  await deleteContract.mutateAsync({ id: contract.id });
-                }}
+                // onClick={async () => {
+                //   await deleteContract.mutateAsync({ id: contract.id });
+                // }}
               >
                 <Table.Td>{contract?.Apartment?.Building?.name}</Table.Td>
                 <Table.Td>{contract?.Apartment?.number}</Table.Td>

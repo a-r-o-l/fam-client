@@ -58,6 +58,11 @@ export const RenterRowItem = ({ item, onHistoryClick, onEdit, onDelete }) => {
       <Table.Td>
         <CustomProgress item={contract} />
       </Table.Td>
+      {/* <Table.Td>
+        <Text fw={900} c={isRenting ? "green" : "dark.2"}>
+          4/12
+        </Text>
+      </Table.Td> */}
       <Table.Td align="center">
         <RenterRowMenu
           onEdit={() => onEdit(item?.id)}

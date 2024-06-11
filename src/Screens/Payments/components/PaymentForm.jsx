@@ -98,6 +98,25 @@ export const PaymentForm = ({ onCloseModal }) => {
     }
   };
 
+  // useEffect(() => {
+  //   if (selectedRenter) {
+  //     const foundRenter = rentersData.find(
+  //       (renter) => renter.id === parseInt(selectedRenter)
+  //     );
+  //     if (foundRenter) {
+  //       const currentContract = foundRenter.Contracts;
+  //       if (currentContract?.length) {
+  //         const currentValue = currentContract[0].value;
+  //         setValue(currentValue);
+  //       }
+  //     }
+  //   }
+  // }, [selectedRenter, rentersData]);
+
+  // const defaultValue = useMemo(() => {
+  //   if(selectedRenter){}
+  // }, [selectedRenter]);
+
   return (
     <div className="flex flex-1 flex-col justify-end px-10" onSubmit={onSubmit}>
       <Fieldset

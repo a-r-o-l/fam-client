@@ -80,7 +80,7 @@ export const ContractForm = ({ renter = null, disabled }) => {
       return data;
     }
     return [];
-  }, [buildings, renter]);
+  }, [buildings]);
 
   const apartmentSelectData = useMemo(() => {
     const data = apartments?.map((apartment) => {
@@ -91,7 +91,7 @@ export const ContractForm = ({ renter = null, disabled }) => {
       };
     });
     return data || [];
-  }, [apartments, renter]);
+  }, [apartments]);
 
   const onSubmit = async (data) => {
     if (!selectedApartment) {
@@ -108,7 +108,7 @@ export const ContractForm = ({ renter = null, disabled }) => {
         .format("YYYY/MM/DD"),
     };
     try {
-      const response = await createContract.mutateAsync(payload);
+      await createContract.mutateAsync(payload);
       if (createContract.isSuccess) {
         toast.success("Contrato creado correctamente");
         reset(defaultValues);
@@ -244,7 +244,7 @@ export const ContractForm = ({ renter = null, disabled }) => {
                   withAsterisk
                   clampBehavior="strict"
                   min={0}
-                  max={12}
+                  max={36}
                   leftSectionPointerEvents="none"
                   leftSection={<FaBusinessTime />}
                   value={field.value}

@@ -19,6 +19,7 @@ const headerItems = [
   { id: 10, label: "Inicio" },
   { id: 11, label: "Contrato" },
   { id: 12, label: "Tiempo" },
+  // { id: 11, label: "Actualizacion" },
   { id: 13, label: "Acciones" },
 ];
 
