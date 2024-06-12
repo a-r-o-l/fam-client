@@ -8,6 +8,7 @@ import {
   useMantineTheme,
   MultiSelect,
   Checkbox,
+  Switch,
 } from "@mantine/core";
 import { useGetRentersQuery } from "../../services/hooks/Renter/useRenterQuery";
 import {
@@ -34,6 +35,7 @@ export const RentersScreen = () => {
   const [selectedBuilding, setSelectedBuilding] = useState([]);
   const [opened, setOpened] = useState(false);
   const [check, setCheck] = useState(true);
+  const [completeInfo, setCompleteInfo] = useState(false);
 
   const { data } = useGetRentersQuery();
   const { data: buildings } = useGetBuildingsQuery();
@@ -156,10 +158,19 @@ export const RentersScreen = () => {
               label="sin contrato"
               value={check}
               onChange={() => setCheck(!check)}
+              className="text-black dark:text-white"
             />
           </Group>
+          <Switch
+            label="vista completa"
+            value={completeInfo}
+            onChange={(e) => {
+              setCompleteInfo(e.target.checked);
+            }}
+            className="text-black dark:text-white"
+          />
         </div>
-        <div className="flex h-20 items-center justify-end pr-10">
+        <div className="flex h-20 items-center justify-end pr-10 gap-20">
           <ActionIcon
             variant="filled"
             radius="xl"
@@ -173,7 +184,7 @@ export const RentersScreen = () => {
       </div>
 
       <Space mt={40} />
-      <RentersTable renters={renters} />
+      <RentersTable renters={renters} completeInfo={completeInfo} />
       <Modal
         title="☉ Registro de inquilino"
         withCloseButton={false}

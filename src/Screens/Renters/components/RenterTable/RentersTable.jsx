@@ -18,12 +18,12 @@ const headerItems = [
   { id: 9, label: "Monto" },
   { id: 10, label: "Inicio" },
   { id: 11, label: "Contrato" },
-  { id: 12, label: "Tiempo" },
-  // { id: 11, label: "Actualizacion" },
-  { id: 13, label: "Acciones" },
+  { id: 12, label: "Expira" },
+  { id: 13, label: "Actualizacion" },
+  { id: 14, label: "Acciones" },
 ];
 
-export const RentersTable = ({ renters }) => {
+export const RentersTable = ({ renters, completeInfo }) => {
   const navigate = useNavigate();
   const deleteRenter = useDeleteRenterMutation();
   const { colorScheme } = useMantineColorScheme();
@@ -63,11 +63,20 @@ export const RentersTable = ({ renters }) => {
       <Table stickyHeader striped="even" verticalSpacing={20} highlightOnHover>
         <Table.Thead bg={colorScheme === "dark" ? "dark.9" : "gray.2"}>
           <Table.Tr>
-            {headerItems.map((item) => (
-              <Table.Th key={item.id} className="text-black dark:text-white">
-                {item.label}
-              </Table.Th>
-            ))}
+            {headerItems.map((item) => {
+              if (!completeInfo && item.id > 1 && item.id < 7) {
+                return null;
+              }
+              return (
+                <Table.Th
+                  key={item.id}
+                  className="text-black dark:text-white"
+                  align="justify"
+                >
+                  {item.label}
+                </Table.Th>
+              );
+            })}
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
@@ -79,6 +88,7 @@ export const RentersTable = ({ renters }) => {
                 onHistoryClick={onHistoryClick}
                 onEdit={onEdit}
                 onDelete={onPrevDelete}
+                completeInfo={completeInfo}
               />
             ))
           ) : (

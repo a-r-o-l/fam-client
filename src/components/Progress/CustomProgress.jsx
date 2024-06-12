@@ -1,6 +1,6 @@
-import { Progress, Text } from "@mantine/core";
+import { Progress } from "@mantine/core";
 import dayjs from "dayjs";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 
 export const CustomProgress = ({ item }) => {
   const progressValue = useMemo(() => {
@@ -24,7 +24,7 @@ export const CustomProgress = ({ item }) => {
   }, [progressValue]);
 
   return (
-    <div>
+    <div className="w-3/4">
       {item ? <Progress value={progressValue} color={progressColor} /> : ""}
     </div>
   );

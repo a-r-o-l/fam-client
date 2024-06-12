@@ -1,11 +1,18 @@
 import { useMemo } from "react";
-import { Avatar, Indicator, Table, Text } from "@mantine/core";
+import { Avatar, Indicator, NumberFormatter, Table } from "@mantine/core";
 import { textFormat } from "../../../../utils/textFormat";
 import dayjs from "dayjs";
-import { CustomProgress } from "../../../../components/Progress/CustomProgress";
 import { RenterRowMenu } from "./RenterRowMenu";
+import { RenterTd } from "./RenterTd";
+import { CustomRing } from "../../../../components/Ring/CustomRing";
 
-export const RenterRowItem = ({ item, onHistoryClick, onEdit, onDelete }) => {
+export const RenterRowItem = ({
+  item,
+  onHistoryClick,
+  onEdit,
+  onDelete,
+  completeInfo,
+}) => {
   const contract = useMemo(() => {
     if (item?.Contracts?.length) {
       const contract = item?.Contracts.find(
@@ -23,7 +30,7 @@ export const RenterRowItem = ({ item, onHistoryClick, onEdit, onDelete }) => {
 
   return (
     <Table.Tr key={item.id}>
-      <Table.Td>
+      <Table.Td align="justify">
         <Indicator
           inline
           size={14}
@@ -35,35 +42,47 @@ export const RenterRowItem = ({ item, onHistoryClick, onEdit, onDelete }) => {
           <Avatar src={item.image_url} size="lg" />
         </Indicator>
       </Table.Td>
-      <Table.Td>{item.name}</Table.Td>
-      <Table.Td>{item.lastname}</Table.Td>
-      <Table.Td>{item.dni}</Table.Td>
-      <Table.Td>{item.phone}</Table.Td>
-      <Table.Td>{item.email}</Table.Td>
-      <Table.Td>
-        <Text fw={900} c={isRenting ? "green" : "dark.2"}>
-          {textFormat([contract?.Apartment?.Building?.name || ""], "uppercase")}
-        </Text>
+      <RenterTd value={item.name} render={completeInfo} />
+      <RenterTd value={item.lastname} render={completeInfo} />
+      <RenterTd value={item.dni} render={completeInfo} />
+      <RenterTd value={item.phone} render={completeInfo} />
+      <RenterTd value={item.email} render={completeInfo} />
+      <RenterTd
+        value={textFormat(
+          [contract?.Apartment?.Building?.name || ""],
+          "uppercase"
+        )}
+        color={isRenting ? "green" : "dark.2"}
+        fw={900}
+      />
+      <RenterTd
+        value={contract?.Apartment?.number || ""}
+        color={isRenting ? "green" : "dark.2"}
+        fw={900}
+      />
+
+      {/* <RenterTd value={contract ? `$ ${contract?.value}` : ""} color="green" /> */}
+      <Table.Td align="justify">
+        <NumberFormatter
+          prefix="$ "
+          value={contract?.value}
+          thousandSeparator
+          className="text-fam_blue-4 font-bold"
+        />
       </Table.Td>
-      <Table.Td>
-        <Text fw={900} c={isRenting ? "green" : "dark.2"}>
-          {contract?.Apartment?.number || ""}
-        </Text>
+
+      <RenterTd
+        value={contract ? dayjs(contract?.start_date).format("DD-MM-YY") : ""}
+      />
+      <RenterTd value={contract?.months_amount || ""} />
+
+      <Table.Td align="justify">
+        <CustomRing item={contract} />
       </Table.Td>
-      <Table.Td>{contract ? `$ ${contract?.value}` : ""}</Table.Td>
-      <Table.Td>
-        {contract ? dayjs(contract?.start_date).format("DD-MM-YY") : ""}
+      <Table.Td align="justify">
+        <CustomRing item={contract} />
       </Table.Td>
-      <Table.Td>{contract?.months_amount || ""}</Table.Td>
-      <Table.Td>
-        <CustomProgress item={contract} />
-      </Table.Td>
-      {/* <Table.Td>
-        <Text fw={900} c={isRenting ? "green" : "dark.2"}>
-          4/12
-        </Text>
-      </Table.Td> */}
-      <Table.Td align="center">
+      <Table.Td align="justify">
         <RenterRowMenu
           onEdit={() => onEdit(item?.id)}
           onDelete={() => onDelete(item?.id)}
