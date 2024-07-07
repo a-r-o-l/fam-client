@@ -7,20 +7,20 @@ import { CustomDialog } from "../../../../components/Dialog/CustomDialog";
 import { toast } from "sonner";
 
 const headerItems = [
-  { id: 1, label: "Avatar" },
-  { id: 2, label: "Nombre" },
-  { id: 3, label: "Apellido" },
-  { id: 4, label: "Dni" },
-  { id: 5, label: "Tel" },
-  { id: 6, label: "Email" },
-  { id: 7, label: "Complejo" },
-  { id: 8, label: "Depto" },
-  { id: 9, label: "Monto" },
-  { id: 10, label: "Inicio" },
-  { id: 11, label: "Contrato" },
-  { id: 12, label: "Expira" },
-  { id: 13, label: "Actualizacion" },
-  { id: 14, label: "Acciones" },
+  { id: 1, label: "Avatar", align: "left" },
+  { id: 2, label: "Nombre", align: "left" },
+  { id: 3, label: "Apellido", align: "left" },
+  { id: 4, label: "Dni", align: "left" },
+  { id: 5, label: "Tel", align: "left" },
+  { id: 6, label: "Email", align: "left" },
+  { id: 7, label: "Complejo", align: "left" },
+  { id: 8, label: "Depto", align: "left" },
+  { id: 9, label: "Monto", align: "left" },
+  { id: 10, label: "Inicio", align: "left" },
+  { id: 11, label: "Contrato", align: "left" },
+  { id: 12, label: "Actualizacion", align: "center" },
+  { id: 13, label: "Expira", align: "center" },
+  { id: 14, label: "Acciones", align: "center" },
 ];
 
 export const RentersTable = ({ renters, completeInfo }) => {
@@ -34,8 +34,8 @@ export const RentersTable = ({ renters, completeInfo }) => {
     navigate(`/renter/${itemId}`);
   };
 
-  const onHistoryClick = () => {
-    console.log("report");
+  const onHistoryClick = (itemId) => {
+    navigate(`/renter/history/${itemId}`);
   };
 
   const onDelete = async () => {
@@ -60,18 +60,28 @@ export const RentersTable = ({ renters, completeInfo }) => {
 
   return (
     <Table.ScrollContainer minWidth={900} type="native" h={650}>
-      <Table stickyHeader striped="even" verticalSpacing={20} highlightOnHover>
+      <Table
+        stickyHeader
+        striped="even"
+        verticalSpacing="sm"
+        horizontalSpacing="xl"
+        highlightOnHover
+        align="left"
+        // withColumnBorders
+        withTableBorder
+      >
         <Table.Thead bg={colorScheme === "dark" ? "dark.9" : "gray.2"}>
           <Table.Tr>
             {headerItems.map((item) => {
               if (!completeInfo && item.id > 1 && item.id < 7) {
                 return null;
               }
+
               return (
                 <Table.Th
                   key={item.id}
                   className="text-black dark:text-white"
-                  align="justify"
+                  style={{ textAlign: item.align }}
                 >
                   {item.label}
                 </Table.Th>

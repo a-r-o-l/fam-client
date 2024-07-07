@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { Table, Text } from "@mantine/core";
+import { ActionIcon, Table, Text } from "@mantine/core";
 import { useUpdatePaymentMutation } from "../../../services/hooks/Payment/usePaymentMutation";
 import { toast } from "sonner";
 import { CustomDialog } from "../../../components/Dialog/CustomDialog";
@@ -8,11 +8,15 @@ import { PaymentSwitch } from "./PaymentSwitch";
 import { ValueViewer } from "./ValueViewer";
 import { DateViewer } from "./DateViewer";
 import { textFormat } from "../../../utils/textFormat";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { useDeletePaymentMutation } from "../../../services/hooks/Payment/usePaymentMutation";
 
-export const PaymentTD = ({ payment }) => {
+export const PaymentTD = ({ payment, openModal }) => {
+  const deletePayment = useDeletePaymentMutation();
   const updatePayment = useUpdatePaymentMutation();
   const [payed, setPayed] = useState(payment.payed || false);
   const [openAlert, setOpenAlert] = useState(false);
+  const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
 
   const renter = useMemo(() => {
     return payment?.Contract?.Renter || null;
@@ -83,12 +87,49 @@ export const PaymentTD = ({ payment }) => {
           }}
         />
       </Table.Td>
+      <Table.Td>
+        <ActionIcon
+          variant="filled"
+          radius="xl"
+          size="xl"
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpenDeleteAlert(true);
+          }}
+          bg="dark"
+        >
+          <FaRegTrashAlt />
+        </ActionIcon>
+      </Table.Td>
 
       <CustomDialog
         open={openAlert}
         onClose={() => setOpenAlert(false)}
         onConfirm={onConfirm}
         text="Estas seguro de cancelar un pago?"
+      />
+
+      <CustomDialog
+        loading={deletePayment.isPending}
+        open={openDeleteAlert}
+        onClose={() => setOpenDeleteAlert(false)}
+        onConfirm={() => {
+          deletePayment.mutate(
+            { id: payment.id },
+            {
+              onSuccess: () => {
+                setOpenDeleteAlert(false);
+                toast.success("Pago eliminado correctamente", {
+                  description: `El pago numero ${payment.id} ha sido eliminado correctamente`,
+                });
+              },
+              onError: () => {
+                toast.error("Error al eliminar el pago");
+              },
+            }
+          );
+        }}
+        text="Estas seguro de eliminar este pago?"
       />
     </Table.Tr>
   );

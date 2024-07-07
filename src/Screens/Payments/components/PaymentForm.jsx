@@ -4,7 +4,7 @@ import {
   NumberInput,
   Select as MSelect,
 } from "@mantine/core";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FaBuilding,
   FaCalendarDay,
@@ -18,13 +18,50 @@ import { DateInput } from "@mantine/dates";
 import { PaymentSwitch } from "./PaymentSwitch";
 import { useCreatePaymentMutation } from "../../../services/hooks/Payment/usePaymentMutation";
 import dayjs from "dayjs";
+import { useField } from "@mantine/form";
+import { toast } from "sonner";
 
-export const PaymentForm = ({ onCloseModal }) => {
+export const PaymentForm = ({
+  onCloseModal,
+  selectedPayment = null,
+  setSelectedPayment,
+}) => {
+  const amountField = useField({
+    initialValue: "0",
+    validateOnBlur: true,
+    validate: (value) => {
+      if (!value) {
+        return "El monto es requerido";
+      }
+      if (isNaN(value)) {
+        return "El monto no es valido";
+      }
+      if (Number(value) < 0) {
+        return "El monto no puede ser negativo";
+      }
+      if (value === "0") {
+        return "El monto no puede ser 0";
+      }
+      return null;
+    },
+  });
+  const dateField = useField({
+    initialValue: "",
+    validateOnBlur: true,
+    validate: (value) => {
+      if (!value) {
+        return "La fecha es requerida";
+      }
+      if (!dayjs(value).isValid) {
+        return "La fecha no es valida";
+      }
+      return null;
+    },
+  });
+
   const [selectedBuilding, setSelectedBuilding] = useState("");
   const [selectedRenter, setSelectedRenter] = useState("");
   const [payed, setPayed] = useState(false);
-  const [value, setValue] = useState("");
-  const [date, setDate] = useState("");
   const [creating, setCreating] = useState(false);
 
   const createPayement = useCreatePaymentMutation();
@@ -83,39 +120,53 @@ export const PaymentForm = ({ onCloseModal }) => {
         contractId: renterData.activeContractId,
         apartmentId: renterData.activeApartmentId,
         renterId: parseInt(selectedRenter),
-        value: value,
-        date: dayjs(date).format("YYYY/MM/DD"),
+        value: amountField.getValue(),
+        date: dayjs(dateField.getValue()).format("YYYY/MM/DD"),
         payed: payed,
       };
-      await createPayement.mutateAsync(payload);
-      if (createPayement.isSuccess) {
-        onCloseModal();
-      }
+      createPayement.mutate(payload, {
+        onSuccess: () => {
+          toast.success("Pago creado correctamente");
+          onCloseModal();
+        },
+        onError: () => {
+          toast.error("Error al crear el pago");
+        },
+      });
     } catch (error) {
-      console.log(error);
+      toast.error(error?.message);
     } finally {
       setCreating(false);
     }
   };
 
-  // useEffect(() => {
-  //   if (selectedRenter) {
-  //     const foundRenter = rentersData.find(
-  //       (renter) => renter.id === parseInt(selectedRenter)
-  //     );
-  //     if (foundRenter) {
-  //       const currentContract = foundRenter.Contracts;
-  //       if (currentContract?.length) {
-  //         const currentValue = currentContract[0].value;
-  //         setValue(currentValue);
-  //       }
-  //     }
-  //   }
-  // }, [selectedRenter, rentersData]);
+  const disabledSubmit = useMemo(() => {
+    if (
+      !selectedBuilding ||
+      !selectedRenter ||
+      !amountField.getValue() ||
+      !dateField.getValue()
+    ) {
+      return true;
+    } else {
+      if (amountField.error || dateField.error) {
+        return true;
+      }
+      return false;
+    }
+  }, [selectedBuilding, selectedRenter, amountField, dateField]);
 
-  // const defaultValue = useMemo(() => {
-  //   if(selectedRenter){}
-  // }, [selectedRenter]);
+  useEffect(() => {
+    if (selectedPayment) {
+      setSelectedBuilding(
+        selectedPayment?.Contract?.Apartment?.buildingId.toString()
+      );
+      setSelectedRenter(selectedPayment?.Contract?.renterId.toString());
+      amountField.setValue(selectedPayment?.value.toString());
+      // dateField.setValue(selectedPayment?.date);
+      setPayed(selectedPayment?.payed);
+    }
+  }, [selectedPayment]);
 
   return (
     <div className="flex flex-1 flex-col justify-end px-10" onSubmit={onSubmit}>
@@ -156,8 +207,7 @@ export const PaymentForm = ({ onCloseModal }) => {
             leftSectionPointerEvents="none"
             leftSection={<FaRegMoneyBill1 />}
             label="Monto"
-            value={value}
-            onChange={setValue}
+            {...amountField.getInputProps()}
           />
         </div>
         <div className="w-full h-20">
@@ -166,8 +216,7 @@ export const PaymentForm = ({ onCloseModal }) => {
             valueFormat="DD/MM/YYYY"
             label="Fecha"
             leftSection={<FaCalendarDay />}
-            value={date}
-            onChange={setDate}
+            {...dateField.getInputProps()}
           />
         </div>
         <div className="w-full h-20 mt-5 flex justify-end">
@@ -188,11 +237,12 @@ export const PaymentForm = ({ onCloseModal }) => {
         </Button>
 
         <Button
+          disabled={disabledSubmit}
           radius="xl"
           w={150}
           size="sm"
           type="button"
-          loading={creating}
+          loading={creating || createPayement.isPending}
           onClick={onSubmit}
         >
           Guardar

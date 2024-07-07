@@ -26,7 +26,7 @@ export const DateViewer = ({ payment }) => {
       setFirstRender(false);
       res = await updatePayment.mutateAsync({
         id: payment.id,
-        data: { date: dayjs(value).format("YYYY-MM-DD") },
+        data: { date: dayjs(value).format("YYYY/MM/DD") },
       });
     } catch (error) {
       console.log(error);

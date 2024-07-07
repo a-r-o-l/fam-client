@@ -1,6 +1,7 @@
 import { PaymentsScreen } from "../Screens/Payments/PaymentsScreen";
 import { BuildingScreen } from "../Screens/Building/BuildingScreen";
 import { RentersScreen } from "../Screens/Renters/RentersScreen";
+import { HistoryScreen } from "../Screens/History/HistoryScreen";
 import { RenterScreen } from "../Screens/Renter/RenterScreen";
 import { AnalitycsScreen } from "../Screens/Analitycs/AnalitycsScreen";
 import { WorkInProgressScreen } from "../Screens/WorkInProgress/WorkInProgressScreen";
@@ -36,6 +37,10 @@ const views = [
   {
     path: "/renter/:id",
     component: RenterScreen,
+  },
+  {
+    path: "/renter/history/:id",
+    component: HistoryScreen,
   },
 ];
 

@@ -1,8 +1,8 @@
-import { RingProgress, Text } from "@mantine/core";
+import { Progress } from "@mantine/core";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 
-export const CustomRing = ({ item }) => {
+export const ContractBar = ({ item }) => {
   const progressValue = useMemo(() => {
     const today = dayjs();
     const start = dayjs(item?.start_date);
@@ -26,29 +26,20 @@ export const CustomRing = ({ item }) => {
     }
   }, [progressValue]);
 
+  if (!item) {
+    return <></>;
+  }
+
   return (
-    <div className="w-3/4">
-      {item ? (
-        <RingProgress
-          size={70}
-          thickness={5}
-          value={progressValue}
-          sections={[{ value: progressValue, color: progressColor }]}
-          label={
-            <Text
-              // c={progressColor}
-              fw={400}
-              ta="center"
-              size="xs"
-              className="text-black dark:text-white"
-            >
-              {progressValue}%
-            </Text>
-          }
-        />
-      ) : (
-        ""
-      )}
+    <div className="flex flex-col justify-center items-center gap-1">
+      <div className="flex w-full justify-center items-center">
+        <p className="text-center font-bold text-xs">
+          {progressValue.toString()} %
+        </p>
+      </div>
+      <div className="min-w-40">
+        <Progress value={progressValue} color={progressColor} size="md" />
+      </div>
     </div>
   );
 };

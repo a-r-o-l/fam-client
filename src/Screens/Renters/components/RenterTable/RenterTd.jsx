@@ -9,8 +9,8 @@ export const RenterTd = ({
 }) => {
   if (!render) return null;
   return (
-    <Table.Td align="justify">
-      <div className="w-3/4 truncate">
+    <Table.Td align="left">
+      <div className="truncate">
         <Tooltip label={value} position="top-start" color="blue">
           <Text
             truncate

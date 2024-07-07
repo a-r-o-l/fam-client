@@ -33,6 +33,15 @@ const getPayments = async (data) => {
   if (response?.data) {
     return response.data;
   } else {
+    return null;
+  }
+};
+
+const deletePayment = async (id) => {
+  const response = await http.delete(`/payments/${id}`);
+  if (response?.data) {
+    return response.data;
+  } else {
     return false;
   }
 };
@@ -51,4 +60,5 @@ export const paymentApiService = {
   getPayments,
   createPayment,
   updatePayment,
+  deletePayment,
 };

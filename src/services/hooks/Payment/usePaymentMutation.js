@@ -27,3 +27,16 @@ export const useCreatePaymentMutation = (params, options) => {
     ...options,
   });
 };
+
+export const useDeletePaymentMutation = (params, options) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params) => {
+      return paymentApiService.deletePayment(params.id);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries("getContracts");
+    },
+    ...options,
+  });
+};

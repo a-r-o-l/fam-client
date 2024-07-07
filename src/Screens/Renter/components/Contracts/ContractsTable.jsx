@@ -1,7 +1,8 @@
-import React, { useMemo } from "react";
-import { Badge, Button, NumberFormatter, Table, Text } from "@mantine/core";
+import { ActionIcon, Badge, NumberFormatter, Table } from "@mantine/core";
 import dayjs from "dayjs";
 import { useDeleteContractMutation } from "../../../../services/hooks/Contract/useContractMutation";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { toast } from "sonner";
 
 const headerTitles = [
   "Complejo",
@@ -10,10 +11,11 @@ const headerTitles = [
   "Fecha de inicio",
   "Fecha de fin",
   "Estado",
+  "Eliminar",
 ];
 
 export const ContractsTable = ({ contracts }) => {
-  // const deleteContract = useDeleteContractMutation();
+  const deleteContract = useDeleteContractMutation();
   const today = dayjs();
 
   return (
@@ -31,9 +33,9 @@ export const ContractsTable = ({ contracts }) => {
             contracts?.map((contract) => (
               <Table.Tr
                 key={contract?.id}
-                // onClick={async () => {
-                //   await deleteContract.mutateAsync({ id: contract.id });
-                // }}
+                onClick={() => {
+                  console.log("contract", contract);
+                }}
               >
                 <Table.Td>{contract?.Apartment?.Building?.name}</Table.Td>
                 <Table.Td>{contract?.Apartment?.number}</Table.Td>
@@ -60,6 +62,32 @@ export const ContractsTable = ({ contracts }) => {
                       Vigente
                     </Badge>
                   )}
+                </Table.Td>
+                <Table.Td>
+                  <ActionIcon
+                    variant="filled"
+                    radius="xl"
+                    size="xl"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteContract.mutateAsync(
+                        { id: contract.id },
+                        {
+                          onSuccess: () => {
+                            toast.success("Contrato eliminado correctamente");
+                          },
+                          onError: () => {
+                            toast.error(
+                              "Ocurrio un error al eliminar el contrato"
+                            );
+                          },
+                        }
+                      );
+                    }}
+                    bg="dark"
+                  >
+                    <FaRegTrashAlt />
+                  </ActionIcon>
                 </Table.Td>
               </Table.Tr>
             ))

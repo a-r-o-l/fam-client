@@ -4,7 +4,12 @@ import { FaPencilAlt } from "react-icons/fa";
 import { FaEllipsisVertical, FaTrashCan } from "react-icons/fa6";
 import { TbFileReport } from "react-icons/tb";
 
-export const RenterRowMenu = ({ onHistoryClick, onEdit, onDelete }) => {
+export const RenterRowMenu = ({
+  onHistoryClick,
+  onEdit,
+  onDelete,
+  historyDisabled = false,
+}) => {
   return (
     <Menu>
       <Menu.Target>
@@ -22,6 +27,7 @@ export const RenterRowMenu = ({ onHistoryClick, onEdit, onDelete }) => {
           Editar perfil
         </Menu.Item>
         <Menu.Item
+          disabled={historyDisabled}
           leftSection={
             <TbFileReport style={{ width: rem(14), height: rem(14) }} />
           }

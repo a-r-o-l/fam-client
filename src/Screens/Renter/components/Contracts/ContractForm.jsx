@@ -33,12 +33,18 @@ const schema = yup.object({
     .number()
     .required("El contrato es requerido")
     .typeError("El contrato es requerido"),
+  months_upgrade: yup
+    .number()
+    .oneOf([0, 6, 12], "las actualizaciones son de 6 o 12 meses")
+    .typeError("mes invalido")
+    .default(0),
 });
 
 const defaultValues = {
   value: "",
   start_date: "",
   months_amount: 0,
+  months_upgrade: 0,
 };
 
 export const ContractForm = ({ renter = null, disabled }) => {
@@ -67,6 +73,7 @@ export const ContractForm = ({ renter = null, disabled }) => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues,
+    mode: "onBlur",
   });
 
   const buildingSelectData = useMemo(() => {
@@ -102,23 +109,38 @@ export const ContractForm = ({ renter = null, disabled }) => {
       ...data,
       apartmentId: parseInt(selectedApartment),
       renterId: renter.id,
+      months_upgrade: data.months_upgrade,
       start_date,
       end_date: dayjs(start_date)
         .add(data.months_amount, "months")
         .format("YYYY/MM/DD"),
     };
     try {
-      await createContract.mutateAsync(payload);
-      if (createContract.isSuccess) {
-        toast.success("Contrato creado correctamente");
-        reset(defaultValues);
-      }
+      createContract.mutate(payload, {
+        onSuccess: () => {
+          toast.success("Contrato creado correctamente");
+          reset(defaultValues);
+        },
+        onError: (error) => {
+          if (error.response.status === 414) {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error("Ocurrio un error al crear el contrato");
+          }
+        },
+      });
+      // await createContract.mutateAsync(payload);
+      // if (createContract.isSuccess) {
+      //   toast.success("Contrato creado correctamente");
+      //   reset(defaultValues);
+      // }
     } catch (error) {
-      if (error.response.status === 414) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Ocurrio un error al crear el contrato");
-      }
+      console.log(error);
+      // if (error.response.status === 414) {
+      //   toast.error(error.response.data.message);
+      // } else {
+      //   toast.error("Ocurrio un error al crear el contrato");
+      // }
     }
   };
 
@@ -214,26 +236,26 @@ export const ContractForm = ({ renter = null, disabled }) => {
             )}
           />
         </div>
+        <div className="w-full h-20">
+          <Controller
+            name="start_date"
+            control={control}
+            defaultValue={""}
+            render={({ field }) => (
+              <DateInput
+                disabled={disabled}
+                withAsterisk
+                valueFormat="DD/MM/YYYY"
+                label="Fecha de inicio"
+                leftSection={<FaCalendarDay />}
+                error={errors?.start_date?.message}
+                onChange={field.onChange}
+                value={field.value}
+              />
+            )}
+          />
+        </div>
         <div className="flex flex-row w-full gap-10 items-center">
-          <div className="w-full h-20">
-            <Controller
-              name="start_date"
-              control={control}
-              defaultValue={""}
-              render={({ field }) => (
-                <DateInput
-                  disabled={disabled}
-                  withAsterisk
-                  valueFormat="DD/MM/YYYY"
-                  label="Fecha de inicio"
-                  leftSection={<FaCalendarDay />}
-                  error={errors?.start_date?.message}
-                  onChange={field.onChange}
-                  value={field.value}
-                />
-              )}
-            />
-          </div>
           <div className="w-full h-20">
             <Controller
               name="months_amount"
@@ -256,13 +278,40 @@ export const ContractForm = ({ renter = null, disabled }) => {
               )}
             />
           </div>
+          <div className="w-full h-20">
+            <Controller
+              name="months_upgrade"
+              control={control}
+              render={({ field }) => (
+                <NumberInput
+                  disabled={disabled}
+                  min={0}
+                  max={12}
+                  leftSectionPointerEvents="none"
+                  leftSection={<FaBusinessTime />}
+                  value={field.value}
+                  onChange={field.onChange}
+                  label="Actualizacion de contrato"
+                  error={errors?.months_upgrade?.message}
+                  errorMessage={errors?.months_upgrade?.message}
+                />
+              )}
+            />
+          </div>
         </div>
       </Fieldset>
       <div className="flex w-full mt-10 justify-end">
         {disabled ? (
           <></>
         ) : (
-          <Button radius="xl" w={150} size="sm" type="submit">
+          <Button
+            radius="xl"
+            w={150}
+            size="sm"
+            type="submit"
+            loading={createContract.isPending}
+            disabled={createContract.isPending}
+          >
             Crear
           </Button>
         )}

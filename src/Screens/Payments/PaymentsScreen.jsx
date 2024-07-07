@@ -29,6 +29,7 @@ const tableHeadersTitles = [
   { id: 6, label: "Cuota" },
   { id: 7, label: "Inquilino" },
   { id: 8, label: "Estado" },
+  { id: 9, label: "Eliminar" },
 ];
 
 export const PaymentsScreen = () => {
@@ -41,6 +42,8 @@ export const PaymentsScreen = () => {
 
   const [selectedRenter, setSelectedRenter] = useState("");
   const [selectedBuilding, setSelectedBuilding] = useState([]);
+  const [selectedPayment, setSelectedPayment] = useState(null);
+
   const [check1, setCheck1] = useState(true);
   const [check2, setCheck2] = useState(true);
   const [opened, setOpened] = useState(false);
@@ -140,6 +143,12 @@ export const PaymentsScreen = () => {
 
   const onCloseModal = () => {
     setOpened(false);
+    setSelectedPayment(null);
+  };
+
+  const openModal = (payment) => {
+    setSelectedPayment(payment || null);
+    setOpened(true);
   };
 
   return (
@@ -243,7 +252,11 @@ export const PaymentsScreen = () => {
           <Table.Tbody>
             {filteredPayments?.length ? (
               filteredPayments.map((payment) => (
-                <PaymentTD key={payment.id} payment={payment} />
+                <PaymentTD
+                  key={payment.id}
+                  payment={payment}
+                  openModal={openModal}
+                />
               ))
             ) : (
               <Table.Tr>
@@ -277,7 +290,11 @@ export const PaymentsScreen = () => {
           },
         }}
       >
-        <PaymentForm onCloseModal={onCloseModal} />
+        <PaymentForm
+          onCloseModal={onCloseModal}
+          selectedPayment={selectedPayment}
+          setSelectedPayment={setSelectedPayment}
+        />
       </Modal>
     </div>
   );

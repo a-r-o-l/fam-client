@@ -4,7 +4,8 @@ import { textFormat } from "../../../../utils/textFormat";
 import dayjs from "dayjs";
 import { RenterRowMenu } from "./RenterRowMenu";
 import { RenterTd } from "./RenterTd";
-import { CustomRing } from "../../../../components/Ring/CustomRing";
+import { ContractBar } from "../../../../components/Progress/ContractBar";
+import { UpgradeBar } from "../../../../components/Progress/UpgradeBar";
 
 export const RenterRowItem = ({
   item,
@@ -29,8 +30,8 @@ export const RenterRowItem = ({
   }, [item]);
 
   return (
-    <Table.Tr key={item.id}>
-      <Table.Td align="justify">
+    <Table.Tr key={item.id} onClick={() => console.log(item)}>
+      <Table.Td align="left">
         <Indicator
           inline
           size={14}
@@ -62,7 +63,7 @@ export const RenterRowItem = ({
       />
 
       {/* <RenterTd value={contract ? `$ ${contract?.value}` : ""} color="green" /> */}
-      <Table.Td align="justify">
+      <Table.Td align="left">
         <NumberFormatter
           prefix="$ "
           value={contract?.value}
@@ -76,17 +77,18 @@ export const RenterRowItem = ({
       />
       <RenterTd value={contract?.months_amount || ""} />
 
-      <Table.Td align="justify">
-        <CustomRing item={contract} />
+      <Table.Td>
+        <UpgradeBar item={contract} />
       </Table.Td>
-      <Table.Td align="justify">
-        <CustomRing item={contract} />
+      <Table.Td>
+        <ContractBar item={contract} />
       </Table.Td>
-      <Table.Td align="justify">
+      <Table.Td align="center">
         <RenterRowMenu
+          historyDisabled={!isRenting}
           onEdit={() => onEdit(item?.id)}
           onDelete={() => onDelete(item?.id)}
-          onHistoryClick={onHistoryClick}
+          onHistoryClick={() => onHistoryClick(item?.id)}
         />
       </Table.Td>
     </Table.Tr>
