@@ -14,7 +14,8 @@ import { toast } from "sonner";
 import { HiAtSymbol } from "react-icons/hi";
 import { Input } from "@mantine/core";
 import { IMaskInput } from "react-imask";
-import path from "path";
+import { uploadImage } from "../../../../utils/uploadImage";
+import { useAccountStore } from "../../../../store/useAccountStore";
 
 const defaultValues = {
   name: "",
@@ -37,6 +38,7 @@ const schema = yup
   .required();
 
 export const RenterForm = ({ onCancel, renter = null }) => {
+  const { accessToken } = useAccountStore();
   const createRenter = useCreateRenterMutation();
   const updateRenter = useUpdateRenterMutation();
   const deleteImage = useDeleteImageMutation();
@@ -107,19 +109,13 @@ export const RenterForm = ({ onCancel, renter = null }) => {
     let payload = { ...data };
     try {
       if (localImage) {
-        const data = new FormData();
-        data.append("image", localImage);
         try {
-          const response = await fetch(
-            "https://fam-api-production.up.railway.app/uploads",
-            {
-              method: "POST",
-              body: data,
-            }
-          );
-          const responseData = await response.json();
-          payload.image_url = responseData.imageUrl;
+          const response = await uploadImage(localImage, accessToken);
+          if (response) {
+            payload.image_url = response.imageUrl;
+          }
         } catch (error) {
+          toast.error("Error al subir la imagen");
           console.error(error);
         }
         // data.append("file", localImage);
@@ -137,21 +133,38 @@ export const RenterForm = ({ onCancel, renter = null }) => {
         // }
       }
       if (renter) {
-        await updateRenter.mutateAsync({
-          id: renter.id,
-          data: {
-            ...payload,
-            dni: data.dni.toString(),
+        updateRenter.mutate(
+          {
+            id: renter.id,
+            data: {
+              ...payload,
+              dni: data.dni.toString(),
+            },
+          },
+          {
+            onSettled: () => {
+              if (renter.image_url) {
+                const imageName = getFileNameFromUrl(renter.image_url);
+                deleteImage.mutate(imageName);
+              }
+            },
+            onSuccess: () => {
+              toast.success("Inquilino actualizado correctamente");
+            },
+            onError: () => {
+              toast.error("Error al actualizar el inquilino");
+            },
+          }
+        );
+      } else {
+        createRenter.mutate(payload, {
+          onSuccess: () => {
+            toast.success("Inquilino creado correctamente");
+          },
+          onError: () => {
+            toast.error("Error al crear el inquilino");
           },
         });
-        toast.success("Inquilino actualizado correctamente");
-        if (renter.image_url) {
-          const imageName = getFileNameFromUrl(renter.image_url);
-          await deleteImage.mutateAsync(imageName);
-        }
-      } else {
-        await createRenter.mutateAsync(payload);
-        toast.success("Inquilino creado correctamente");
         onCancel();
       }
     } catch (error) {
@@ -307,14 +320,6 @@ export const RenterForm = ({ onCancel, renter = null }) => {
         ) : (
           <></>
         )}
-        {/* <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          // style={{ display: "none" }}
-          onChange={onImageChange2}
-        /> */}
-
         <Button radius="xl" w={150} size="sm" type="submit" loading={creating}>
           Guardar
         </Button>

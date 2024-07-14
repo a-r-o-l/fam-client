@@ -20,7 +20,7 @@ const getRenterByContract = async (params) => {
   }
 };
 
-const getRenters = async (data) => {
+const getRenters = async () => {
   const response = await http.get(`/renters`);
   if (response?.data) {
     return response.data;

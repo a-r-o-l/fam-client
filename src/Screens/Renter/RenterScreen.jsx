@@ -17,7 +17,7 @@ export const RenterScreen = () => {
 
   return (
     <div className="flex flex-row gap-5">
-      <div className="flex flex-1 flex-col overflow-hidden relative">
+      <div className="flex w-2/5 flex-col overflow-hidden relative">
         <BackButton backTo={() => navigate("/renters")} />
         <Card h="100%" className="flex justify-start mt-20" withBorder>
           <Text fw={900} size="xl" pl={20} pt={20}>
@@ -32,7 +32,10 @@ export const RenterScreen = () => {
             Contratos
           </Text>
           <ContractsTable contracts={renter?.Contracts} />
-          <ContractForm renter={renter} disabled={!!renter?.activeContractId} />
+          <ContractForm
+            renter={renter}
+            disabled={!!renter?.active_contract_id}
+          />
         </Card>
       </div>
     </div>

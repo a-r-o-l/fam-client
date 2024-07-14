@@ -10,10 +10,6 @@ export const CustomDialog = ({ open, onClose, onConfirm, text, loading }) => {
       radius="lg"
       size="sm"
       shadow="md"
-      overlayProps={{
-        blur: 3,
-        backgroundOpacity: 0.4,
-      }}
     >
       <div className="flex flex-1 flex-col justify-end pt-5">
         <div className="flex justify-center items-center flex-1">
@@ -22,7 +18,13 @@ export const CustomDialog = ({ open, onClose, onConfirm, text, loading }) => {
           </Text>
         </div>
         <div className="flex justify-center items-center mt-14 gap-20">
-          <Button onClick={onClose} radius="md" variant="outline" color="blue">
+          <Button
+            onClick={onClose}
+            radius="md"
+            variant="outline"
+            color="blue"
+            disabled={loading}
+          >
             Cancelar
           </Button>
           <Button

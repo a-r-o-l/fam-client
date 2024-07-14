@@ -1,27 +1,14 @@
-import React from "react";
 import { Avatar, Badge, Card, Divider, Popover, Text } from "@mantine/core";
-import { useUpdateApartmentMutation } from "../../../services/hooks/Apartment/useApartmentMutation";
 import { useGetRenterByContractQuery } from "../../../services/hooks/Renter/useRenterQuery";
-import {
-  FaBed,
-  FaBuilding,
-  FaBusinessTime,
-  FaCalendarDay,
-  FaFingerprint,
-  FaMobileScreen,
-  FaRegMoneyBill1,
-  FaRegUser,
-} from "react-icons/fa6";
+import { FaFingerprint, FaMobileScreen, FaRegUser } from "react-icons/fa6";
 import { HiAtSymbol } from "react-icons/hi";
 
 export const ApartmentStepItem = ({ apartment, isLastItem = false }) => {
-  const updateApartment = useUpdateApartmentMutation();
-
   const { data: renter } = useGetRenterByContractQuery(
     {
-      activeContractId: apartment?.activeContractId,
+      activeContractId: apartment?.active_contract_id,
     },
-    { enabled: !!apartment?.activeContractId }
+    { enabled: !!apartment?.active_contract_id }
   );
 
   return (

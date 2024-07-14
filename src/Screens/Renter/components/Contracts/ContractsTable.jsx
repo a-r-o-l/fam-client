@@ -3,18 +3,22 @@ import dayjs from "dayjs";
 import { useDeleteContractMutation } from "../../../../services/hooks/Contract/useContractMutation";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { toast } from "sonner";
+import { CustomDialog } from "../../../../components/Dialog/CustomDialog";
+import { useState } from "react";
 
 const headerTitles = [
   "Complejo",
   "Depto",
   "Importe",
-  "Fecha de inicio",
-  "Fecha de fin",
+  "Fecha inicial",
+  "Fecha final",
   "Estado",
   "Eliminar",
 ];
 
 export const ContractsTable = ({ contracts }) => {
+  const [openAlert, setOpenAlert] = useState(false);
+  const [selectedContractId, setSelectedContractId] = useState(null);
   const deleteContract = useDeleteContractMutation();
   const today = dayjs();
 
@@ -39,7 +43,13 @@ export const ContractsTable = ({ contracts }) => {
               >
                 <Table.Td>{contract?.Apartment?.Building?.name}</Table.Td>
                 <Table.Td>{contract?.Apartment?.number}</Table.Td>
-                <Table.Td>
+                <Table.Td
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
                   <NumberFormatter
                     prefix="$ "
                     value={contract?.value}
@@ -67,26 +77,15 @@ export const ContractsTable = ({ contracts }) => {
                   <ActionIcon
                     variant="filled"
                     radius="xl"
-                    size="xl"
+                    size="lg"
                     onClick={(e) => {
                       e.stopPropagation();
-                      deleteContract.mutateAsync(
-                        { id: contract.id },
-                        {
-                          onSuccess: () => {
-                            toast.success("Contrato eliminado correctamente");
-                          },
-                          onError: () => {
-                            toast.error(
-                              "Ocurrio un error al eliminar el contrato"
-                            );
-                          },
-                        }
-                      );
+                      setSelectedContractId(contract.id);
+                      setOpenAlert(true);
                     }}
                     bg="dark"
                   >
-                    <FaRegTrashAlt />
+                    <FaRegTrashAlt size={14} />
                   </ActionIcon>
                 </Table.Td>
               </Table.Tr>
@@ -98,6 +97,30 @@ export const ContractsTable = ({ contracts }) => {
           )}
         </Table.Tbody>
       </Table>
+      <CustomDialog
+        handleClose={(e) => {
+          e.stopPropagation();
+          setOpenAlert(false);
+        }}
+        open={openAlert}
+        onClose={() => setOpenAlert(false)}
+        onConfirm={() =>
+          deleteContract.mutate(
+            { id: selectedContractId },
+            {
+              onSuccess: () => {
+                toast.success("Contrato eliminado correctamente");
+              },
+              onError: () => {
+                toast.error("Ocurrio un error al eliminar el contrato");
+              },
+            }
+          )
+        }
+        text="Estas seguro de Eliminar un contrato?"
+        acceptTitle="Aceptar"
+        loading={deleteContract.isPending}
+      />
     </Table.ScrollContainer>
   );
 };

@@ -18,11 +18,10 @@ export const ValueViewer = ({ payment }) => {
   const updatePayment = useUpdatePaymentMutation();
 
   const onUpdatePayment = useCallback(async () => {
-    let res;
     setLoading(true);
     try {
       setFirstRender(false);
-      res = await updatePayment.mutateAsync({
+      updatePayment.mutate({
         id: payment.id,
         data: { value: value },
       });
@@ -34,7 +33,7 @@ export const ValueViewer = ({ payment }) => {
         setLoading(false);
       }, 2000);
     }
-  }, [value, payment]);
+  }, [value, payment, updatePayment]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -54,7 +53,7 @@ export const ValueViewer = ({ payment }) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [loading, payment, open, value]);
+  }, [loading, payment, open, value, onUpdatePayment]);
 
   const renderButton = useCallback(() => {
     if (loading) {
@@ -87,7 +86,7 @@ export const ValueViewer = ({ payment }) => {
         </Chip>
       );
     }
-  }, [loading, firstRender, value, payment.id, updatePayment]);
+  }, [loading, firstRender, onUpdatePayment]);
 
   return (
     <Popover

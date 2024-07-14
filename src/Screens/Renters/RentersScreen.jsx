@@ -60,7 +60,7 @@ export const RentersScreen = () => {
   const rentersByContracts = useMemo(() => {
     if (data?.length) {
       if (!check) {
-        return data.filter((renter) => !!renter?.activeContractId);
+        return data.filter((renter) => !!renter?.active_contract_id);
       } else {
         return data;
       }
@@ -72,10 +72,10 @@ export const RentersScreen = () => {
   const rentersByBuilding = useMemo(() => {
     if (selectedBuilding?.length) {
       return rentersByContracts.filter((renter) => {
-        const contractId = renter?.activeContractId;
+        const contractId = renter?.active_contract_id;
         const contract = renter?.Contracts.find((c) => c.id === contractId);
         const apt = contract?.Apartment;
-        return selectedBuilding.includes(apt?.buildingId?.toString());
+        return selectedBuilding.includes(apt?.building_id?.toString());
       });
     }
     return rentersByContracts;

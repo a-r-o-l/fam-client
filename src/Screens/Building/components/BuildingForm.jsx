@@ -40,12 +40,27 @@ export const BuildingForm = ({ building }) => {
   const onSubmit = async (data) => {
     try {
       if (building) {
-        await updateBuilding.mutateAsync({ id: building.id, data });
-        toast.success("Complejo actualizado con éxito");
+        updateBuilding.mutate(
+          { id: building.id, data },
+          {
+            onSuccess: () => {
+              toast.success("Complejo actualizado con éxito");
+            },
+            onError: () => {
+              toast.error("Error al actualizar el complejo");
+            },
+          }
+        );
         return;
       }
-      await createBuilding.mutateAsync(data);
-      toast.success("Complejo registrado con éxito");
+      createBuilding.mutate(data, {
+        onSuccess: () => {
+          toast.success("Complejo registrado con éxito");
+        },
+        onError: () => {
+          toast.error("Error al registrar el complejo");
+        },
+      });
     } catch (error) {
       console.log("error-> ", error.response.status);
       if (error.response.status === 410) {

@@ -1,11 +1,4 @@
-import {
-  Button,
-  Popover,
-  NumberInput,
-  NumberFormatter,
-  Chip,
-  FocusTrap,
-} from "@mantine/core";
+import { Button, Popover, Chip } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import { LuLoader2 } from "react-icons/lu";
 import { useUpdatePaymentMutation } from "../../../services/hooks/Payment/usePaymentMutation";
@@ -20,11 +13,10 @@ export const DateViewer = ({ payment }) => {
   const updatePayment = useUpdatePaymentMutation();
 
   const onUpdatePayment = useCallback(async () => {
-    let res;
     setLoading(true);
     try {
       setFirstRender(false);
-      res = await updatePayment.mutateAsync({
+      updatePayment.mutate({
         id: payment.id,
         data: { date: dayjs(value).format("YYYY/MM/DD") },
       });

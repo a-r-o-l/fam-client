@@ -89,10 +89,10 @@ export const PaymentsScreen = () => {
 
     const rentersInSelectedBuildings = rentersOptions.filter((renterOption) => {
       const activeContract = renterOption?.Contracts.find(
-        (contract) => contract.id === renterOption?.activeContractId
+        (contract) => contract.id === renterOption?.active_contract_id
       );
       const apartment = activeContract?.Apartment;
-      return selectedBuilding.includes(apartment?.buildingId?.toString());
+      return selectedBuilding.includes(apartment?.building_id?.toString());
     });
 
     rentersInSelectedBuildings.unshift(allRentersOption);
@@ -105,7 +105,7 @@ export const PaymentsScreen = () => {
         return paymentsData.filter((payment) => {
           const contract = payment?.Contract;
           const apartment = contract?.Apartment;
-          return selectedBuilding.includes(apartment?.buildingId?.toString());
+          return selectedBuilding.includes(apartment?.building_id?.toString());
         });
       } else {
         return paymentsData;
@@ -118,7 +118,7 @@ export const PaymentsScreen = () => {
     if (paymentsByBuilding?.length) {
       if (!!selectedRenter && selectedRenter !== "all") {
         return paymentsByBuilding?.filter(
-          (payment) => payment?.Contract?.renterId === parseInt(selectedRenter)
+          (payment) => payment?.Contract?.renter_id === parseInt(selectedRenter)
         );
       } else {
         return paymentsByBuilding;

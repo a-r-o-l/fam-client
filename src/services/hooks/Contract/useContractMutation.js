@@ -9,7 +9,6 @@ export const useUpdateContractMutation = (params, options) => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries("getContracts");
-      await queryClient.invalidateQueries("getApartments");
     },
     ...options,
   });

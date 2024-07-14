@@ -1,22 +1,18 @@
 import {
-  ActionIcon,
   AppShell,
   Burger,
   Group,
   Text,
   useMantineColorScheme,
   Image,
-  Card,
-  TextInput,
-  Button,
+  BackgroundImage,
 } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import { Router } from "../routes/Router";
 import { createStyles } from "@mantine/styles";
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import views from "../routes/views";
 import { NavLink } from "react-router-dom";
-import { MdLogout, MdPeopleOutline } from "react-icons/md";
+import { MdPeopleOutline } from "react-icons/md";
 import { LiaBuilding } from "react-icons/lia";
 import { PiMoneyLight } from "react-icons/pi";
 import { IoAnalytics } from "react-icons/io5";
@@ -25,44 +21,20 @@ import Typography from "@mui/material/Typography";
 import { textFormat } from "../utils/textFormat";
 import { motion } from "framer-motion";
 import { useAccountStore } from "../store/useAccountStore";
-import { FaKey } from "react-icons/fa";
-import { toast } from "sonner";
-
+import { UserMenu } from "../components/UserMenu/UserMenu";
+import UserModal from "../components/UserModal/UserModal";
+import { LoginScreen } from "../Screens/Login/LoginScreen";
 export const AppTemplate = () => {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
 
   const [opened, setOpened] = useState(false);
-  const [logging, setLogging] = useState(false);
+  const [openUserModal, setOpenUserModal] = useState(false);
   const [title, setTitle] = useState("");
-  const [password, setPassword] = useState("");
-  const isLogged = useAccountStore((state) => state.isLogged);
-  const psw = useAccountStore((state) => state.password);
+  const { account } = useAccountStore();
 
   const toggleColorScheme = (value) => {
     const newValue = value || (colorScheme === "dark" ? "light" : "dark");
     setColorScheme(newValue);
-  };
-
-  const handlerLoggin = async () => {
-    if (!password || psw !== password) {
-      toast.error("Password incorrecto");
-      return;
-    } else {
-      setLogging(true);
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 4000));
-        if (psw === password) {
-          useAccountStore.setState({ isLogged: true });
-          return;
-        } else {
-          toast.error("Hubo un error, vuelve a intentarlo");
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLogging(false);
-      }
-    }
   };
 
   const useStyles = createStyles((theme) => ({
@@ -111,61 +83,8 @@ export const AppTemplate = () => {
     }
   }, [colorScheme]);
 
-  useEffect(() => {
-    setPassword("");
-  }, [isLogged]);
-
-  if (!isLogged) {
-    return (
-      <div className="flex flex-1 justify-center items-center py-40 h-screen">
-        <Card
-          withBorder
-          styles={{
-            root: {
-              padding: 60,
-              backgroundColor: "transparent",
-              width: 400,
-            },
-          }}
-        >
-          <div className="flex flex-col items-center gap-10">
-            <div className="w-20 h-20 rounded-full overflow-hidden flex justify-center items-center dark:border-fam_blue-8 border-fam_blue-8 border-4">
-              <Image src="./fam-logo4.jpg" fit="cover" h={80} w={100} />
-            </div>
-            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-black dark:text-white">
-              Iniciar session
-            </h3>
-            <div className="w-full">
-              <TextInput
-                withAsterisk
-                leftSectionPointerEvents="none"
-                leftSection={<FaKey />}
-                label="Password"
-                autoFocus
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                disabled={logging}
-                size="md"
-              />
-            </div>
-            <div className="mt-20 w-full">
-              <Button
-                onClick={handlerLoggin}
-                loading={logging}
-                disabled={logging}
-                variant="filled"
-                radius="xl"
-                size="md"
-                fullWidth
-              >
-                Ingresar
-              </Button>
-            </div>
-          </div>
-        </Card>
-      </div>
-    );
+  if (!account) {
+    return <LoginScreen />;
   }
 
   return (
@@ -175,56 +94,38 @@ export const AppTemplate = () => {
       navbar={{
         width: 300,
         zIndex: 1,
-
         breakpoint: "sm",
-        collapsed: { mobile: !opened },
+        // collapsed: { mobile: !opened },
+        collapsed: { desktop: opened },
       }}
       padding="xl"
     >
       <AppShell.Header>
-        <Group h="100%" px="xl" align="center" justify="center" bg="famblue.6">
-          <Burger
-            opened={opened}
-            onClick={() => setOpened(!opened)}
-            hiddenFrom="sm"
-            size="sm"
-          />
-          <div className="flex flex-1 flex-row justify-between items-center">
-            <div className="min-w-72">
-              <div className="w-20 h-20 rounded-full overflow-hidden flex justify-center items-center dark:border-white border-fam_blue-8 border-4 ">
-                <Image src="./fam-logo4.jpg" fit="cover" h={80} w={100} />
-              </div>
+        <BackgroundImage
+          src="./stars_background.png"
+          className="flex flex-1 h-full"
+        >
+          <div className="flex justify-start absolute left-2 top-2">
+            <Burger onClick={() => setOpened(!opened)} />
+          </div>
+          <div className="flex flex-1 justify-between items-center h-full px-10">
+            <div className="flex justify-center items-center w-1/6 px-3 pb-2 pt-4 rounded-xl">
+              <Image src="./complex2.png" fit="contain" />
             </div>
-            <div className="flex justify-start w-full">{renderTitle()}</div>
-            <div style={{ marginLeft: "auto" }} className="flex gap-10">
-              <ActionIcon
-                variant="default"
-                onClick={() => {
+            <div className="flex justify-start w-full ml-40">
+              {/* {renderTitle()} */}
+            </div>
+            <div>
+              <UserMenu
+                onChangeTheme={() => {
                   toggleColorScheme();
                 }}
-                size={40}
-                radius="xl"
-              >
-                {colorScheme === "dark" ? (
-                  <SunIcon width={20} height={20} />
-                ) : (
-                  <MoonIcon width={20} height={20} />
-                )}
-              </ActionIcon>
-              <ActionIcon
-                variant="default"
-                disabled={!isLogged}
-                onClick={() => {
-                  useAccountStore.setState({ isLogged: false });
-                }}
-                size={40}
-                radius="xl"
-              >
-                <MdLogout />
-              </ActionIcon>
+                onOpenUserModal={() => setOpenUserModal(true)}
+                theme={colorScheme}
+              />
             </div>
           </div>
-        </Group>
+        </BackgroundImage>
       </AppShell.Header>
 
       <AppShell.Navbar p="md">
@@ -269,6 +170,10 @@ export const AppTemplate = () => {
       <AppShell.Main>
         <Router />
       </AppShell.Main>
+      <UserModal
+        open={openUserModal}
+        onCloseModal={() => setOpenUserModal(false)}
+      />
     </AppShell>
   );
 };

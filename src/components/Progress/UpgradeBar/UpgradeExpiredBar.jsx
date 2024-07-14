@@ -6,27 +6,20 @@ import {
   Popover,
   Progress,
 } from "@mantine/core";
-import dayjs from "dayjs";
-import { useMemo, useState } from "react";
-import { GrUpdate } from "react-icons/gr";
-import { useCreateUpgradeMutation } from "../../services/hooks/Upgrade/useUpgradeMutation";
-import { toast } from "sonner";
-import { useField } from "@mantine/form";
 import { DateInput } from "@mantine/dates";
 import { FaCalendarDay } from "react-icons/fa6";
+import { GrUpdate } from "react-icons/gr";
+import { useUpdateContractMutation } from "../../../services/hooks/Contract/useContractMutation";
+import { useField } from "@mantine/form";
+import dayjs from "dayjs";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
-export const UpgradeBar = ({ item }) => {
-  const upgrade = useMemo(() => {
-    if (item?.Upgrades?.length) {
-      const upgrade = item?.Upgrades[item?.Upgrades.length - 1];
-      return upgrade;
-    } else {
-      return null;
-    }
-  }, [item]);
+export const UpgradeExpiredBar = ({ progressColor, progressValue, item }) => {
+  const updateContract = useUpdateContractMutation();
 
   const newValueField = useField({
-    initialValue: upgrade?.newValue,
+    initialValue: item?.upgrade_value,
     validateOnBlur: true,
     validate: (value) => {
       if (!value) {
@@ -45,6 +38,8 @@ export const UpgradeBar = ({ item }) => {
     },
   });
 
+  const [open, setOpen] = useState(false);
+
   const dateField = useField({
     initialValue: "",
     validateOnBlur: true,
@@ -59,8 +54,30 @@ export const UpgradeBar = ({ item }) => {
     },
   });
 
-  const [open, setOpen] = useState(false);
-  const createUpgrade = useCreateUpgradeMutation();
+  const handleSubmit = () => {
+    const upgrade_start_date = dayjs(dateField.getValue()).format("YYYY/MM/DD");
+    const upgrade_end_date = dayjs(autoDate).format("YYYY/MM/DD");
+    const upgrade_value = newValueField.getValue();
+    updateContract.mutate(
+      {
+        id: item.id,
+        data: {
+          upgrade_start_date,
+          upgrade_end_date,
+          upgrade_value,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success("Actualizacion exitosa");
+          setOpen(false);
+        },
+        onError: () => {
+          toast.error("Error al actualizar");
+        },
+      }
+    );
+  };
 
   const autoDate = useMemo(() => {
     if (!dateField.getValue()) {
@@ -72,38 +89,8 @@ export const UpgradeBar = ({ item }) => {
     return endDate;
   }, [dateField, item]);
 
-  const daysLeft = useMemo(() => {
-    const today = dayjs();
-    const start = dayjs(upgrade?.startDate);
-    const end = dayjs(upgrade?.endDate);
-
-    const tiempoTotal = end.diff(start, "day");
-    let tiempoTranscurrido = today.diff(start, "day");
-    const totalDuration = end.diff(start, "day");
-    const elapsedDuration = today.diff(start, "day");
-
-    const progressValue = Math.round((elapsedDuration / totalDuration) * 100);
-    tiempoTranscurrido = Math.max(0, tiempoTranscurrido);
-    tiempoTranscurrido = Math.min(tiempoTranscurrido, tiempoTotal);
-
-    return { tiempoTranscurrido, tiempoTotal, progressValue };
-  }, [upgrade]);
-
-  const progressColor = useMemo(() => {
-    if (daysLeft.progressValue < 25) {
-      return "famblue.4";
-    }
-    if (daysLeft.progressValue < 50) {
-      return "famgreen.6";
-    } else if (daysLeft.progressValue < 75) {
-      return "famyellow.4";
-    } else {
-      return "famdeepred.6";
-    }
-  }, [daysLeft.progressValue]);
-
   const disabledSubmit = useMemo(() => {
-    if (createUpgrade.isPending) {
+    if (updateContract.isPending) {
       return true;
     }
     if (dateField.error || !dateField.getValue()) {
@@ -113,49 +100,7 @@ export const UpgradeBar = ({ item }) => {
       return true;
     }
     return false;
-  }, [newValueField, dateField, createUpgrade.isPending]);
-
-  const handleSubmit = (e) => {
-    e.stopPropagation();
-    const data = {
-      startDate: dayjs(dateField.getValue()).format("YYYY/MM/DD"),
-      endDate: dayjs(autoDate).format("YYYY/MM/DD"),
-      newValue: newValueField.getValue(),
-      contractId: item?.id,
-    };
-    createUpgrade.mutate(data, {
-      onSuccess: () => {
-        toast.success("Actualizacion éxitosa");
-        setOpen(false);
-      },
-      onError: () => {
-        toast.error("Error al actualizar");
-      },
-    });
-  };
-
-  if (!upgrade) {
-    return <></>;
-  }
-
-  if (daysLeft.progressValue < 100) {
-    return (
-      <div className="flex flex-col justify-center items-center gap-1">
-        <div className="flex w-full justify-center items-center">
-          <p className="text-center font-bold text-xs">
-            {daysLeft.tiempoTranscurrido} / {daysLeft.tiempoTotal}
-          </p>
-        </div>
-        <div className="min-w-40">
-          <Progress
-            value={daysLeft.progressValue}
-            color={progressColor}
-            size="md"
-          />
-        </div>
-      </div>
-    );
-  }
+  }, [newValueField, dateField, updateContract.isPending]);
 
   return (
     <div className="flex flex-col justify-center items-center gap-1">
@@ -207,16 +152,19 @@ export const UpgradeBar = ({ item }) => {
             </FocusTrap>
             <div className="flex w-full justify-between py-5">
               <Button
-                onClick={(e) => setOpen(false)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpen(false);
+                }}
                 variant="outline"
                 color="blue"
                 radius="xl"
-                disabled={createUpgrade.isPending}
+                disabled={updateContract.isPending}
               >
                 Cancelar
               </Button>
               <Button
-                loading={createUpgrade.isPending}
+                loading={updateContract.isPending}
                 disabled={disabledSubmit}
                 variant="filled"
                 color="blue"
@@ -230,11 +178,7 @@ export const UpgradeBar = ({ item }) => {
         </Popover>
       </div>
       <div className="min-w-40">
-        <Progress
-          value={daysLeft.progressValue}
-          color={progressColor}
-          size="md"
-        />
+        <Progress value={progressValue} color={progressColor} size="md" />
       </div>
     </div>
   );

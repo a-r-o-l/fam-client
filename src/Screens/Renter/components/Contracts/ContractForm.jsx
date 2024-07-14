@@ -81,7 +81,7 @@ export const ContractForm = ({ renter = null, disabled }) => {
       const data = buildings.map((building) => {
         return {
           label: textFormat([building?.name], "allcapitalize"),
-          value: building.id.toString(),
+          value: building?.id?.toString(),
         };
       });
       return data;
@@ -93,8 +93,8 @@ export const ContractForm = ({ renter = null, disabled }) => {
     const data = apartments?.map((apartment) => {
       return {
         label: apartment.number,
-        value: apartment.id.toString(),
-        disabled: !!apartment?.activeContractId,
+        value: apartment?.id?.toString(),
+        disabled: !!apartment?.active_contract_id,
       };
     });
     return data || [];
@@ -107,8 +107,8 @@ export const ContractForm = ({ renter = null, disabled }) => {
     const start_date = dayjs(data.start_date).format("YYYY/MM/DD");
     const payload = {
       ...data,
-      apartmentId: parseInt(selectedApartment),
-      renterId: renter.id,
+      apartment_id: parseInt(selectedApartment),
+      renter_id: renter?.id,
       months_upgrade: data.months_upgrade,
       start_date,
       end_date: dayjs(start_date)
@@ -129,30 +129,20 @@ export const ContractForm = ({ renter = null, disabled }) => {
           }
         },
       });
-      // await createContract.mutateAsync(payload);
-      // if (createContract.isSuccess) {
-      //   toast.success("Contrato creado correctamente");
-      //   reset(defaultValues);
-      // }
     } catch (error) {
       console.log(error);
-      // if (error.response.status === 414) {
-      //   toast.error(error.response.data.message);
-      // } else {
-      //   toast.error("Ocurrio un error al crear el contrato");
-      // }
     }
   };
 
   useEffect(() => {
     refetch();
-  }, [selectedBuilding]);
+  }, [selectedBuilding, refetch]);
 
   useEffect(() => {
     if (buildingSelectData) {
-      setSelectedBuilding(buildings[0].id.toString());
+      setSelectedBuilding(buildings[0]?.id.toString());
     }
-  }, [buildingSelectData]);
+  }, [buildingSelectData, buildings]);
 
   return (
     <form
@@ -180,7 +170,6 @@ export const ContractForm = ({ renter = null, disabled }) => {
                 console.log(selectedBuilding);
                 setSelectedBuilding(e);
               }}
-              fullWidth
               size="md"
               comboboxProps={{ shadow: "xl" }}
               styles={{
@@ -201,7 +190,6 @@ export const ContractForm = ({ renter = null, disabled }) => {
               onChange={(e) => {
                 setSelectedApartment(e);
               }}
-              fullWidth
               size="md"
               comboboxProps={{ shadow: "xl" }}
               styles={() => {

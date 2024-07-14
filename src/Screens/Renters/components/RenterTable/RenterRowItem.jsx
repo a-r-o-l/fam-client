@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { RenterRowMenu } from "./RenterRowMenu";
 import { RenterTd } from "./RenterTd";
 import { ContractBar } from "../../../../components/Progress/ContractBar";
-import { UpgradeBar } from "../../../../components/Progress/UpgradeBar";
+import { UpgradeBar } from "../../../../components/Progress/UpgradeBar/UpgradeBar";
 
 export const RenterRowItem = ({
   item,
@@ -17,7 +17,7 @@ export const RenterRowItem = ({
   const contract = useMemo(() => {
     if (item?.Contracts?.length) {
       const contract = item?.Contracts.find(
-        (con) => con.id === item.activeContractId
+        (con) => con.id === item.active_contract_id
       );
       return contract;
     } else {
@@ -26,7 +26,7 @@ export const RenterRowItem = ({
   }, [item]);
 
   const isRenting = useMemo(() => {
-    return !!item?.activeContractId;
+    return !!item?.active_contract_id;
   }, [item]);
 
   return (
@@ -61,12 +61,14 @@ export const RenterRowItem = ({
         color={isRenting ? "green" : "dark.2"}
         fw={900}
       />
-
-      {/* <RenterTd value={contract ? `$ ${contract?.value}` : ""} color="green" /> */}
       <Table.Td align="left">
         <NumberFormatter
           prefix="$ "
-          value={contract?.value}
+          value={
+            !contract?.months_upgrade
+              ? contract?.value
+              : contract?.upgrade_value
+          }
           thousandSeparator
           className="text-fam_blue-4 font-bold"
         />

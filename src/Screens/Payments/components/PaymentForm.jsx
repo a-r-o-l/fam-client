@@ -21,11 +21,7 @@ import dayjs from "dayjs";
 import { useField } from "@mantine/form";
 import { toast } from "sonner";
 
-export const PaymentForm = ({
-  onCloseModal,
-  selectedPayment = null,
-  setSelectedPayment,
-}) => {
+export const PaymentForm = ({ onCloseModal, selectedPayment = null }) => {
   const amountField = useField({
     initialValue: "0",
     validateOnBlur: true,
@@ -101,10 +97,10 @@ export const PaymentForm = ({
 
     const rentersInSelectedBuildings = rentersOptions.filter((renterOption) => {
       const activeContract = renterOption?.Contracts.find(
-        (contract) => contract.id === renterOption?.activeContractId
+        (contract) => contract.id === renterOption?.active_contract_id
       );
       const apartment = activeContract?.Apartment;
-      return selectedBuilding.includes(apartment?.buildingId?.toString());
+      return selectedBuilding.includes(apartment?.building_id?.toString());
     });
 
     return rentersInSelectedBuildings;
@@ -117,9 +113,9 @@ export const PaymentForm = ({
         (renter) => renter.id === parseInt(selectedRenter)
       );
       const payload = {
-        contractId: renterData.activeContractId,
-        apartmentId: renterData.activeApartmentId,
-        renterId: parseInt(selectedRenter),
+        contract_id: renterData.active_contract_id,
+        apartment_id: renterData.active_apartment_id,
+        renter_id: parseInt(selectedRenter),
         value: amountField.getValue(),
         date: dayjs(dateField.getValue()).format("YYYY/MM/DD"),
         payed: payed,
@@ -159,9 +155,9 @@ export const PaymentForm = ({
   useEffect(() => {
     if (selectedPayment) {
       setSelectedBuilding(
-        selectedPayment?.Contract?.Apartment?.buildingId.toString()
+        selectedPayment?.Contract?.Apartment?.building_id.toString()
       );
-      setSelectedRenter(selectedPayment?.Contract?.renterId.toString());
+      setSelectedRenter(selectedPayment?.Contract?.renter_id.toString());
       amountField.setValue(selectedPayment?.value.toString());
       // dateField.setValue(selectedPayment?.date);
       setPayed(selectedPayment?.payed);

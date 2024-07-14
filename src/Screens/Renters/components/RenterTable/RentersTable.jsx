@@ -30,6 +30,8 @@ export const RentersTable = ({ renters, completeInfo }) => {
   const [renterToDelete, setRenterToDelete] = useState(null);
   const [openAlert, setOpenAlert] = useState(false);
 
+  console.log(renters);
+
   const onEdit = (itemId) => {
     navigate(`/renter/${itemId}`);
   };
@@ -39,18 +41,22 @@ export const RentersTable = ({ renters, completeInfo }) => {
   };
 
   const onDelete = async () => {
-    try {
-      await deleteRenter.mutateAsync(renterToDelete);
-    } catch (error) {
-      if (error.response.status === 410) {
-        toast.error(
-          "No se pueden eliminar un inquilino con un contrato activo"
-        );
-      }
-    } finally {
-      setRenterToDelete(null);
-      setOpenAlert(false);
-    }
+    deleteRenter.mutate(renterToDelete, {
+      onSuccess: () => {
+        toast.success("Inquilino eliminado correctamente");
+        setRenterToDelete(null);
+        setOpenAlert(false);
+      },
+      onError: (error) => {
+        if (error.response.status === 410) {
+          toast.error(
+            "No se pueden eliminar un inquilino con un contrato activo"
+          );
+        } else {
+          toast.error("Ocurrio un error al eliminar el inquilino");
+        }
+      },
+    });
   };
 
   const onPrevDelete = async (id) => {

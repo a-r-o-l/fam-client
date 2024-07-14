@@ -1,12 +1,22 @@
-import React, { useCallback, useRef, useState } from "react";
-import { ActionIcon, Avatar, Card, Image, Popover } from "@mantine/core";
-import { FaReceipt } from "react-icons/fa6";
+import { useCallback, useRef, useState } from "react";
+import { ActionIcon, Card, Image, Popover } from "@mantine/core";
+import { FaReceipt, FaRegTrashCan } from "react-icons/fa6";
 import { useUpdatePaymentMutation } from "../../../services/hooks/Payment/usePaymentMutation";
+import { uploadImage } from "../../../utils/uploadImage";
+import { useAccountStore } from "../../../store/useAccountStore";
+import { toast } from "sonner";
+import { useDeleteImageMutation } from "../../../services/hooks/images/useImagesMutation";
 
 export const ReceiptViewer = ({ payment }) => {
+  const { accessToken } = useAccountStore();
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const updatePayment = useUpdatePaymentMutation();
+  const deleteImage = useDeleteImageMutation();
+
+  const getFileNameFromUrl = useCallback((url) => {
+    return url.substring(url.lastIndexOf("/") + 1);
+  }, []);
 
   const onImgChanged = useCallback(
     async (e) => {
@@ -17,22 +27,25 @@ export const ReceiptViewer = ({ payment }) => {
         if (!file) {
           return;
         }
-        const data = new FormData();
-        data.append("file", file);
-        data.append("upload_preset", "receipt");
-        const res = await fetch(
-          "https://api.cloudinary.com/v1_1/dbb2vknkm/image/upload",
-          {
-            method: "POST",
-            body: data,
+        try {
+          const response = await uploadImage(file, accessToken, false);
+          if (response) {
+            const image_url = response.imageUrl;
+            updatePayment.mutate(
+              {
+                id: payment.id,
+                data: { receipt: image_url },
+              },
+              {
+                onSuccess: () => {
+                  toast.success("Pago actualizado correctamente");
+                },
+              }
+            );
           }
-        );
-        const imgUrl = await res.json();
-        if (imgUrl?.secure_url) {
-          await updatePayment.mutateAsync({
-            id: payment.id,
-            data: { receipt: imgUrl.secure_url },
-          });
+        } catch (error) {
+          toast.error("Error al subir la imagen");
+          console.error(error);
         }
       } catch (error) {
         console.log(error);
@@ -40,7 +53,7 @@ export const ReceiptViewer = ({ payment }) => {
         setLoading(false);
       }
     },
-    [payment]
+    [payment, accessToken, updatePayment]
   );
 
   const renderButton = useCallback(() => {
@@ -71,15 +84,37 @@ export const ReceiptViewer = ({ payment }) => {
         </ActionIcon>
       );
     }
-  }, [loading, payment, onImgChanged]);
+  }, [loading, payment]);
 
   const renderViewer = useCallback(() => {
     if (payment?.receipt) {
       return (
-        <Card shadow="sm" padding="lg" radius="md">
-          <Card.Section>
+        <Card shadow="sm" padding="xl" radius="md">
+          <Card.Section className="">
             <Image src={payment?.receipt || ""} w={250} h={250} />
           </Card.Section>
+          <div className="flex w-full justify-center pt-5">
+            <ActionIcon
+              variant="filled"
+              color="dark"
+              radius="xl"
+              size="xl"
+              onClick={() => {
+                const imageName = getFileNameFromUrl(payment?.receipt);
+                deleteImage.mutate(imageName, {
+                  onSuccess: () => {
+                    updatePayment.mutate({
+                      id: payment.id,
+                      data: { receipt: "" },
+                    });
+                    toast.success("Imagen eliminada correctamente");
+                  },
+                });
+              }}
+            >
+              <FaRegTrashCan />
+            </ActionIcon>
+          </div>
         </Card>
       );
     } else {
