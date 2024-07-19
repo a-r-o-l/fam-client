@@ -122,8 +122,9 @@ const UserModal = ({ open, onCloseModal }) => {
         <div>
           <Button
             onClick={() => {
-              const imageName = getFileNameFromUrl(account.image_url);
-              deleteImage.mutate(imageName);
+              console.log(account);
+              // const imageName = getFileNameFromUrl(account.image_url);
+              // deleteImage.mutate(imageName);
             }}
           >
             delete image

@@ -15,7 +15,7 @@ export const UserMenu = ({ onChangeTheme, theme, onOpenUserModal }) => {
     <Menu shadow="xl" width={250} position="bottom-end">
       <Menu.Target>
         <ActionIcon variant="outline" size="xl" radius="xl" color="white">
-          <Avatar src={account.image_url} />
+          <Avatar src={account?.image_url} />
         </ActionIcon>
       </Menu.Target>
 

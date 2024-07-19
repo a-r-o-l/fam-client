@@ -253,7 +253,7 @@ export const RenterForm = ({ onCancel, renter = null }) => {
               <TextInput
                 leftSectionPointerEvents="none"
                 leftSection={<HiAtSymbol />}
-                label="E-mail"
+                label="Correo electronico"
                 value={field.value}
                 error={errors?.email?.message}
                 onChange={field.onChange}

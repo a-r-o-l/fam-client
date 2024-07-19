@@ -7,30 +7,18 @@ import {
   Image,
   BackgroundImage,
 } from "@mantine/core";
-import { useCallback, useEffect, useState } from "react";
-import { Router } from "../routes/Router";
+import { useEffect, useState } from "react";
 import { createStyles } from "@mantine/styles";
 import views from "../routes/views";
 import { NavLink } from "react-router-dom";
-import { MdPeopleOutline } from "react-icons/md";
-import { LiaBuilding } from "react-icons/lia";
-import { PiMoneyLight } from "react-icons/pi";
-import { IoAnalytics } from "react-icons/io5";
-import { GiSettingsKnobs } from "react-icons/gi";
-import Typography from "@mui/material/Typography";
-import { textFormat } from "../utils/textFormat";
-import { motion } from "framer-motion";
-import { useAccountStore } from "../store/useAccountStore";
 import { UserMenu } from "../components/UserMenu/UserMenu";
 import UserModal from "../components/UserModal/UserModal";
-import { LoginScreen } from "../Screens/Login/LoginScreen";
-export const AppTemplate = () => {
+import { MercadoPagoButton } from "../components/Buttons/MPButton";
+export const AppTemplate = ({ children }) => {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
 
   const [opened, setOpened] = useState(false);
   const [openUserModal, setOpenUserModal] = useState(false);
-  const [title, setTitle] = useState("");
-  const { account } = useAccountStore();
 
   const toggleColorScheme = (value) => {
     const newValue = value || (colorScheme === "dark" ? "light" : "dark");
@@ -60,21 +48,6 @@ export const AppTemplate = () => {
 
   const { classes } = useStyles();
 
-  const renderTitle = useCallback(() => {
-    return (
-      <motion.div
-        animate={{ opacity: 1, x: 0 }}
-        initial={{ opacity: 0, x: -50 }}
-        transition={{ duration: 0.3 }}
-        key={title}
-      >
-        <Typography variant="h4" fontWeight={900} className="text-white">
-          {textFormat([title], "uppercase")}
-        </Typography>
-      </motion.div>
-    );
-  }, [title]);
-
   useEffect(() => {
     if (colorScheme === "dark") {
       document.querySelector("body").classList.add("dark");
@@ -82,10 +55,6 @@ export const AppTemplate = () => {
       document.querySelector("body").classList.remove("dark");
     }
   }, [colorScheme]);
-
-  if (!account) {
-    return <LoginScreen />;
-  }
 
   return (
     <AppShell
@@ -95,7 +64,6 @@ export const AppTemplate = () => {
         width: 300,
         zIndex: 1,
         breakpoint: "sm",
-        // collapsed: { mobile: !opened },
         collapsed: { desktop: opened },
       }}
       padding="xl"
@@ -113,7 +81,7 @@ export const AppTemplate = () => {
               <Image src="./complex2.png" fit="contain" />
             </div>
             <div className="flex justify-start w-full ml-40">
-              {/* {renderTitle()} */}
+              <MercadoPagoButton />
             </div>
             <div>
               <UserMenu
@@ -138,13 +106,11 @@ export const AppTemplate = () => {
               align="left"
               to={view.path}
               key={index}
+              color="blue"
               onClick={() => {
                 setOpened(false);
               }}
               className={({ isActive }) => {
-                if (isActive) {
-                  setTitle(view.name);
-                }
                 return (
                   classes.navLink +
                   " " +
@@ -153,13 +119,8 @@ export const AppTemplate = () => {
               }}
             >
               <Group>
-                {view.name === "Pagos" && <PiMoneyLight fontSize={25} />}
-                {view.name === "Complejos" && <LiaBuilding fontSize={25} />}
-                {view.name === "Inquilinos" && (
-                  <MdPeopleOutline fontSize={25} />
-                )}
-                {view.name === "Analiticas" && <IoAnalytics fontSize={25} />}
-                {view.name === "Opciones" && <GiSettingsKnobs fontSize={25} />}
+                {view.icon && <view.icon fontSize={25} />}
+
                 <Text size="xl">{view.name}</Text>
               </Group>
             </NavLink>
@@ -167,9 +128,7 @@ export const AppTemplate = () => {
         })}
       </AppShell.Navbar>
 
-      <AppShell.Main>
-        <Router />
-      </AppShell.Main>
+      <AppShell.Main>{children}</AppShell.Main>
       <UserModal
         open={openUserModal}
         onCloseModal={() => setOpenUserModal(false)}

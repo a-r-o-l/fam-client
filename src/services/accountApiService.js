@@ -27,8 +27,14 @@ const updateAccount = async (accountId, data) => {
   }
 };
 
+const findAccount = async (search_params) => {
+  const response = await http.get(`/account/find/${search_params}`);
+  return response?.data;
+};
+
 export const accountApiService = {
   createSession,
   createAccount,
   updateAccount,
+  findAccount,
 };

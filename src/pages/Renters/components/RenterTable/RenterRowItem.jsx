@@ -70,7 +70,7 @@ export const RenterRowItem = ({
               : contract?.upgrade_value
           }
           thousandSeparator
-          className="text-fam_blue-4 font-bold"
+          className="text-fam_blue-4 font-bold whitespace-nowrap"
         />
       </Table.Td>
 
