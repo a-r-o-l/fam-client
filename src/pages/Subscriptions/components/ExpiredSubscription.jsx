@@ -74,6 +74,7 @@ export const ExpiredSubscription = () => {
             <Wallet
               initialization={{
                 preferenceId: preferenceId,
+                redirectMode: "modal",
               }}
               locale="es-AR"
               onSubmit={(data) => {

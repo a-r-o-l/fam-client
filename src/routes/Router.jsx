@@ -4,6 +4,7 @@ import { LoginScreen } from "../pages/Login/LoginScreen";
 import { AppTemplate } from "../layouts/AppTemplate";
 import { useAccountStore } from "../store/useAccountStore";
 import { useEffect } from "react";
+import { SubscriptionSuccessScreen } from "../pages/Subscriptions/pages/SubscriptionSuccessScreen";
 
 const useAuthRedirect = (condition, redirectTo) => {
   const { account, accessToken, setCreateSession } = useAccountStore();
@@ -49,6 +50,10 @@ export const Router = () => {
         <Route path="/login" element={<LoginScreen />} />
       </Route>
       <Route element={<ProtectedLayout />}>
+        <Route
+          path="/subscriptions/success/*"
+          element={<SubscriptionSuccessScreen />}
+        />
         {views.map((view, index) => (
           <Route
             key={index}

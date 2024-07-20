@@ -45,6 +45,7 @@ export const FirstSubscription = () => {
             <Wallet
               initialization={{
                 preferenceId: preferenceId,
+                redirectMode: "modal",
               }}
               locale="es-AR"
               onSubmit={(data) => {

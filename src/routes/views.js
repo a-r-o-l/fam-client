@@ -54,10 +54,6 @@ const views = [
     component: SubscriptionsScreen,
   },
   {
-    path: "/subscriptions/success",
-    component: SubscriptionSuccessScreen,
-  },
-  {
     path: "/subscriptions/pending",
     component: SubscriptionSuccessScreen,
   },
