@@ -13,6 +13,7 @@ import { PiMoneyLight } from "react-icons/pi";
 import { LiaBuilding } from "react-icons/lia";
 import { MdPeopleOutline } from "react-icons/md";
 import { SubscriptionsScreen } from "../pages/Subscriptions/SubscriptionsScreen";
+import { SubscriptionSuccessScreen } from "../pages/Subscriptions/pages/SubscriptionSuccessScreen";
 const views = [
   {
     path: "/",
@@ -47,10 +48,22 @@ const views = [
     component: OptionsScreen,
   },
   {
-    path: "/subscribe",
+    path: "/subscriptions",
     name: "Suscripcion",
     icon: IoIosNotificationsOutline,
     component: SubscriptionsScreen,
+  },
+  {
+    path: "/subscriptions/success",
+    component: SubscriptionSuccessScreen,
+  },
+  {
+    path: "/subscriptions/pending",
+    component: SubscriptionSuccessScreen,
+  },
+  {
+    path: "/subscriptions/failure",
+    component: SubscriptionSuccessScreen,
   },
   {
     path: "/renter/:id",

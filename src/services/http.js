@@ -1,9 +1,12 @@
 import axios from "axios";
 import { useAccountStore } from "../store/useAccountStore";
 
+// const apiUrl = import.meta.env.VITE_API_URL;
+const localApiUrl = import.meta.env.VITE_LOCAL_API_URL;
+
 export const http = axios.create({
-  baseURL: "https://fam-api-production.up.railway.app",
-  // baseURL: "http://localhost:3000",
+  baseURL: apiUrl,
+  // baseURL: localApiUrl,
   headers: {
     "Content-Type": "application/json",
   },

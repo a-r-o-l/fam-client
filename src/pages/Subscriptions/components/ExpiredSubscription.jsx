@@ -7,8 +7,10 @@ import { usePreferenceMutation } from "../../../services/hooks/Subscription/useS
 import { toast } from "sonner";
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 
+const mercadopagoPublicKey = import.meta.env.VITE_MERCADOPAGO_PUBLIC_KEY;
+
 export const ExpiredSubscription = () => {
-  initMercadoPago("APP_USR-71cfd048-c2ed-4bc6-a05a-27014ae2f6ed", {
+  initMercadoPago(mercadopagoPublicKey, {
     locale: "es-AR",
   });
   const { account } = useAccountStore();
