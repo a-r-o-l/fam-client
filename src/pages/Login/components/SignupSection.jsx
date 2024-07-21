@@ -21,8 +21,12 @@ import { useField } from "@mantine/form";
 import { accountApiService } from "../../../services/accountApiService";
 import { useLoginMutation } from "../../../services/hooks/Login/useLoginMutation";
 import { useAccountStore } from "../../../store/useAccountStore";
+import { useNavigate } from "react-router-dom";
+
+const googleApi = import.meta.env.VITE_GOOGLE_API;
 
 export const SignupSection = ({ setLogging, logging, setLoginMode }) => {
+  const navigate = useNavigate();
   const validateAsync = async (value) => {
     if (value.length < 5) {
       return "El nombre de usuario debe tener al menos 5 caracteres";
@@ -56,14 +60,11 @@ export const SignupSection = ({ setLogging, logging, setLoginMode }) => {
 
   const getUserInfo = async (accessToken) => {
     try {
-      const response = await axios.get(
-        "https://www.googleapis.com/oauth2/v3/userinfo",
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.get(googleApi, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       return response.data || null;
     } catch (error) {
       console.error("Error de Google api:", error);
@@ -320,6 +321,7 @@ export const SignupSection = ({ setLogging, logging, setLoginMode }) => {
                               toast.success(
                                 `Bienvenido ${user_name.getValue()}`
                               );
+                              navigate("/");
                               setLogging(false);
                             }
                           },
