@@ -1,5 +1,0 @@
-[phases.build]
-cmds = ["npm install", "npm run build"]
-
-[start]
-cmd = "npx http-server ./dist -p 8080 --proxy http://localhost:8080?"
