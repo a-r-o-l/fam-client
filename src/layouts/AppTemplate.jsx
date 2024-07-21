@@ -9,14 +9,15 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { createStyles } from "@mantine/styles";
-import views from "../routes/views";
-import { NavLink } from "react-router-dom";
+import navigationConfig from "../routes/navigationConfig";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { UserMenu } from "../components/UserMenu/UserMenu";
 import UserModal from "../components/UserModal/UserModal";
-import { MercadoPagoButton } from "../components/Buttons/MPButton";
-export const AppTemplate = ({ children }) => {
+import { useAccountStore } from "../store/useAccountStore";
+export const AppTemplate = () => {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
-
+  const { account, accessToken, setCreateSession } = useAccountStore();
+  const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
   const [openUserModal, setOpenUserModal] = useState(false);
 
@@ -56,6 +57,18 @@ export const AppTemplate = ({ children }) => {
     }
   }, [colorScheme]);
 
+  useEffect(() => {
+    if (!account) {
+      const accessToken = localStorage.getItem("access-token");
+      const refreshToken = localStorage.getItem("refresh-token");
+      if (accessToken) {
+        setCreateSession(accessToken, refreshToken);
+      } else {
+        navigate("/login");
+      }
+    }
+  }, [account, accessToken, setCreateSession, navigate]);
+
   return (
     <AppShell
       header={{ height: 150 }}
@@ -80,9 +93,6 @@ export const AppTemplate = ({ children }) => {
             <div className="flex justify-center items-center w-1/6 px-3 pb-2 pt-4 rounded-xl">
               <Image src="./complex2.png" fit="contain" />
             </div>
-            <div className="flex justify-start w-full ml-40">
-              <MercadoPagoButton />
-            </div>
             <div>
               <UserMenu
                 onChangeTheme={() => {
@@ -97,7 +107,7 @@ export const AppTemplate = ({ children }) => {
       </AppShell.Header>
 
       <AppShell.Navbar p="md">
-        {views?.map((view, index) => {
+        {navigationConfig?.map((view, index) => {
           if (!view.name) {
             return null;
           }
@@ -128,7 +138,9 @@ export const AppTemplate = ({ children }) => {
         })}
       </AppShell.Navbar>
 
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main>
+        <Outlet />
+      </AppShell.Main>
       <UserModal
         open={openUserModal}
         onCloseModal={() => setOpenUserModal(false)}
