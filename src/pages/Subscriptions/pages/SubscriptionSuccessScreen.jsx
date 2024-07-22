@@ -30,5 +30,9 @@ export const SubscriptionSuccessScreen = () => {
 
   console.log(data);
 
-  return <div>SubscriptionSuccessScreen</div>;
+  return (
+    <div className="flex flex-1 justify-center items-center">
+      <h1>Tu pago fue aprobado satisfactoriamente!</h1>
+    </div>
+  );
 };
