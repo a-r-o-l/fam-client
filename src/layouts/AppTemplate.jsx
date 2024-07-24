@@ -7,7 +7,7 @@ import {
   Image,
   BackgroundImage,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createStyles } from "@mantine/styles";
 import navigationConfig from "../routes/navigationConfig";
 import {
@@ -32,12 +32,17 @@ export const AppTemplate = () => {
   const [subscriptionModal, setSubscriptionModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [searchParams] = useSearchParams();
-  const status = searchParams.get("status");
 
   const toggleColorScheme = (value) => {
     const newValue = value || (colorScheme === "dark" ? "light" : "dark");
     setColorScheme(newValue);
   };
+
+  const status = useMemo(() => {
+    if (searchParams.get("status")) {
+      return searchParams.get("status");
+    }
+  }, [searchParams]);
 
   const useStyles = createStyles((theme) => ({
     navLink: {
@@ -175,7 +180,7 @@ export const AppTemplate = () => {
       />
       <SubscriptionModal open={subscriptionModal} />
       <WelcomeModal open={welcomeModal} />
-      <SuccessModal open={successModal} />
+      <SuccessModal open={successModal} status={status} />
     </AppShell>
   );
 };

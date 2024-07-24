@@ -2,27 +2,29 @@ import { Image, Modal } from "@mantine/core";
 import { useAccountStore } from "../../store/useAccountStore";
 import { useEffect, useState } from "react";
 import { Progress } from "@mantine/core";
-const SuccessModal = ({ open, onCloseModal }) => {
+const SuccessModal = ({ open, onCloseModal, status }) => {
   const { setCloseSession } = useAccountStore();
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (progress >= 100) {
-      setCloseSession();
-      return;
-    }
-    const timer = setInterval(() => {
-      setProgress((prevProgress) => {
-        if (prevProgress < 100) {
-          return prevProgress + 20;
-        }
-        clearInterval(timer);
-        return 100;
-      });
-    }, 1000);
+    if (status) {
+      if (progress >= 100) {
+        setCloseSession();
+        return;
+      }
+      const timer = setInterval(() => {
+        setProgress((prevProgress) => {
+          if (prevProgress < 100) {
+            return prevProgress + 20;
+          }
+          clearInterval(timer);
+          return 100;
+        });
+      }, 1000);
 
-    return () => clearInterval(timer);
-  }, [progress, setCloseSession]);
+      return () => clearInterval(timer);
+    }
+  }, [progress, setCloseSession, status]);
 
   return (
     <Modal
