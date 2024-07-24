@@ -13,7 +13,7 @@ import { FaGoogle, FaKey, FaRegUser } from "react-icons/fa6";
 import { useLoginMutation } from "../../../services/hooks/Login/useLoginMutation";
 import { useAccountStore } from "../../../store/useAccountStore";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const googleApi = import.meta.env.VITE_GOOGLE_API;
@@ -21,7 +21,7 @@ const googleApi = import.meta.env.VITE_GOOGLE_API;
 export const SigninSection = ({ setLogging, logging, setLoginMode }) => {
   const navigate = useNavigate();
   const createSession = useLoginMutation();
-  const { setCreateSession } = useAccountStore();
+  const { setCreateSession, account } = useAccountStore();
   const { colorScheme } = useMantineColorScheme();
   const colorGoogleButton = colorScheme === "dark" ? "white" : "dark";
   const [userName, setUserName] = useState("");
@@ -43,7 +43,7 @@ export const SigninSection = ({ setLogging, logging, setLoginMode }) => {
       const code = await getUserInfo(codeResponse.access_token);
       if (code.email_verified) {
         createSession.mutate(
-          { googleId: code.sub },
+          { google_id: code.sub },
           {
             onSuccess: async (response) => {
               if (response) {
@@ -51,7 +51,7 @@ export const SigninSection = ({ setLogging, logging, setLoginMode }) => {
                 setCreateSession(accessToken, refreshToken);
                 toast.success(`Bienvenido de vuelta ${code.name}`);
                 setLogging(false);
-                navigate("/");
+                // navigate("/");
               }
             },
             onError: (error) => {
@@ -87,7 +87,7 @@ export const SigninSection = ({ setLogging, logging, setLoginMode }) => {
             await new Promise((resolve) => setTimeout(resolve, 4000));
             setCreateSession(accessToken, refreshToken);
             toast.success(`Bienvenido de vuelta ${userName}`);
-            navigate("/");
+            // navigate("/");
           }
         },
         onError: (error) => {
@@ -102,6 +102,12 @@ export const SigninSection = ({ setLogging, logging, setLoginMode }) => {
       }
     );
   };
+
+  useEffect(() => {
+    if (account) {
+      navigate("/");
+    }
+  }, [account, navigate]);
 
   return (
     <div className="flex flex-1 justify-center items-center py-40 h-screen">

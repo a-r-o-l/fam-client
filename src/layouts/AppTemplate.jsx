@@ -10,16 +10,29 @@ import {
 import { useEffect, useState } from "react";
 import { createStyles } from "@mantine/styles";
 import navigationConfig from "../routes/navigationConfig";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import {
+  NavLink,
+  Outlet,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { UserMenu } from "../components/UserMenu/UserMenu";
 import UserModal from "../components/UserModal/UserModal";
 import { useAccountStore } from "../store/useAccountStore";
+import SubscriptionModal from "../components/SubscriptionModal/SubscriptionModal";
+import WelcomeModal from "../components/WelcomeModal/WelcomeModal";
+import SuccessModal from "../components/SuccessModal/SuccessModal";
 export const AppTemplate = () => {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const { account, accessToken, setCreateSession } = useAccountStore();
   const navigate = useNavigate();
   const [opened, setOpened] = useState(false);
   const [openUserModal, setOpenUserModal] = useState(false);
+  const [welcomeModal, setWelcomeModal] = useState(false);
+  const [subscriptionModal, setSubscriptionModal] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+  const [searchParams] = useSearchParams();
+  const status = searchParams.get("status");
 
   const toggleColorScheme = (value) => {
     const newValue = value || (colorScheme === "dark" ? "light" : "dark");
@@ -66,8 +79,23 @@ export const AppTemplate = () => {
       } else {
         navigate("/login");
       }
+    } else {
+      if (status && status === "approved") {
+        setSuccessModal(true);
+      } else {
+        // setSubscriptionModal(true);
+        if (account.is_new) {
+          setWelcomeModal(true);
+        } else if (account.status !== "active") {
+          setSubscriptionModal(true);
+        }
+      }
     }
-  }, [account, accessToken, setCreateSession, navigate]);
+  }, [account, accessToken, setCreateSession, navigate, status]);
+
+  if (!account) {
+    return <></>;
+  }
 
   return (
     <AppShell
@@ -145,6 +173,9 @@ export const AppTemplate = () => {
         open={openUserModal}
         onCloseModal={() => setOpenUserModal(false)}
       />
+      <SubscriptionModal open={subscriptionModal} />
+      <WelcomeModal open={welcomeModal} />
+      <SuccessModal open={successModal} />
     </AppShell>
   );
 };

@@ -17,9 +17,9 @@ export const ImagePicker = ({ uploading, imgSrc, onImgChanged, avw, avh }) => {
         radius="xl"
         pos="absolute"
         size="lg"
-        color="dark"
-        top={60}
-        right={5}
+        color="black"
+        top={90}
+        right={10}
         onClick={() => {
           fileInputRef.current?.click?.();
         }}

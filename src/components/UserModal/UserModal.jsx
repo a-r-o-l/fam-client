@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Fieldset,
   Input,
@@ -17,6 +18,7 @@ import { useUpdateAccountMutation } from "../../services/hooks/Account/useAccoun
 import { toast } from "sonner";
 import { uploadImage } from "../../utils/uploadImage";
 import { useDeleteImageMutation } from "../../services/hooks/images/useImagesMutation";
+import SubscriptionBar from "./components/SubscriptionBar";
 const UserModal = ({ open, onCloseModal }) => {
   const { account, setCloseSession, accessToken } = useAccountStore();
   const [localImage, setLocalImage] = useState(null);
@@ -97,12 +99,11 @@ const UserModal = ({ open, onCloseModal }) => {
 
   return (
     <Modal
-      title="☉ Mi cuenta"
       withCloseButton={false}
       opened={open}
       onClose={onCloseModal}
       centered
-      size="xl"
+      size="lg"
       radius="md"
       overlayProps={{
         blur: 3,
@@ -116,10 +117,13 @@ const UserModal = ({ open, onCloseModal }) => {
         title: {
           fontSize: "1rem",
         },
+        body: {
+          paddingTop: 40,
+        },
       }}
     >
       <div className="flex flex-1 flex-col justify-end">
-        <div>
+        {/* <div>
           <Button
             onClick={() => {
               console.log(account);
@@ -129,14 +133,25 @@ const UserModal = ({ open, onCloseModal }) => {
           >
             delete image
           </Button>
-        </div>
-        <div className="flex flex-1 justify-center items-center">
-          <ImagePicker
-            avh={90}
-            avw={90}
-            imgSrc={srcImg}
-            onImgChanged={onImageChange}
-          />
+        </div> */}
+        <div className="flex flex-row w-full justify-start items-center gap-4">
+          <div className="flex items-center justify-center pl-4">
+            <ImagePicker
+              avh={120}
+              avw={120}
+              imgSrc={srcImg}
+              onImgChanged={onImageChange}
+            />
+          </div>
+          <div className="flex flex-col w-1/3 items-start justify-center">
+            <Badge color="green" size="xs">
+              Activo
+            </Badge>
+            <div className="flex flex-col w-1/2 items-start mt-5 gap-1">
+              <p className="text-xs">suscripcion</p>
+              <SubscriptionBar />
+            </div>
+          </div>
         </div>
 
         <Fieldset

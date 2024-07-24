@@ -99,7 +99,7 @@ export const SignupSection = ({ setLogging, logging, setLoginMode }) => {
         const data = {
           email: code.email,
           verified: true,
-          googleId: code.sub,
+          google_id: code.sub,
           role: "user",
           image_url: code.picture,
         };
@@ -311,7 +311,7 @@ export const SignupSection = ({ setLogging, logging, setLoginMode }) => {
                       toast.success("Cuenta creada exitosamente");
                       createSession.mutate(
                         {
-                          googleId: profile.googleId,
+                          google_id: profile.google_id,
                         },
                         {
                           onSuccess: (response) => {
