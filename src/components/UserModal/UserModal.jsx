@@ -149,7 +149,7 @@ const UserModal = ({ open, onCloseModal }) => {
             </Badge>
             <div className="flex flex-col w-1/2 items-start mt-5 gap-1">
               <p className="text-xs">suscripcion</p>
-              <SubscriptionBar />
+              <SubscriptionBar account={account} />
             </div>
           </div>
         </div>

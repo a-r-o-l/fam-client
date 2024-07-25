@@ -97,7 +97,7 @@ const SubscriptionModal = ({ open, onCloseModal }) => {
             <Wallet
               initialization={{
                 preferenceId: preferenceId,
-                redirectMode: "blank",
+                redirectMode: "self",
               }}
               locale="es-AR"
               onSubmit={(data) => {
