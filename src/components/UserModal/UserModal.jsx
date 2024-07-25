@@ -126,7 +126,6 @@ const UserModal = ({ open, onCloseModal }) => {
         {/* <div>
           <Button
             onClick={() => {
-              console.log(account);
               // const imageName = getFileNameFromUrl(account.image_url);
               // deleteImage.mutate(imageName);
             }}
@@ -144,7 +143,13 @@ const UserModal = ({ open, onCloseModal }) => {
             />
           </div>
           <div className="flex flex-col w-1/3 items-start justify-center">
-            <Badge color="green" size="xs">
+            <Badge
+              color="green"
+              size="xs"
+              onClick={() => {
+                console.log(account);
+              }}
+            >
               Activo
             </Badge>
             <div className="flex flex-col w-1/2 items-start mt-5 gap-1">

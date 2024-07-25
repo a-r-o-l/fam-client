@@ -14,8 +14,8 @@ function SubscriptionBar({ account }) {
   const daysLeft = useMemo(() => {
     if (subscription) {
       const today = dayjs();
-      const start = dayjs(subscription?.start_day);
-      const end = dayjs(subscription?.end_day);
+      const start = dayjs(subscription?.start_date);
+      const end = dayjs(subscription?.end_date);
       const totalTime = end.diff(start, "day");
       const totalDuration = end.diff(start, "day");
       let timeRemaining = today.diff(start, "day");
