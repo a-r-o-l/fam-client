@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
+  Badge,
   Button,
   Fieldset,
   Select as MSelect,
@@ -92,9 +93,11 @@ export const ContractForm = ({ renter = null, disabled }) => {
   const apartmentSelectData = useMemo(() => {
     const data = apartments?.map((apartment) => {
       return {
-        label: apartment.number,
+        label: apartment?.number,
         value: apartment?.id?.toString(),
-        disabled: !!apartment?.active_contract_id,
+        rented: !!apartment?.active_contract_id,
+        // disabled: !!apartment?.active_contract_id || apartment?.it_was_sold,
+        it_was_sold: apartment?.it_was_sold,
       };
     });
     return data || [];
@@ -122,7 +125,7 @@ export const ContractForm = ({ renter = null, disabled }) => {
           reset(defaultValues);
         },
         onError: (error) => {
-          if (error.response.status === 414) {
+          if (error?.response?.status === 414) {
             toast.error(error.response.data.message);
           } else {
             toast.error("Ocurrio un error al crear el contrato");
@@ -188,16 +191,79 @@ export const ContractForm = ({ renter = null, disabled }) => {
               label="Depto"
               value={selectedApartment}
               onChange={(e) => {
+                const selectedOption = apartmentSelectData.find(
+                  (option) => option.value === e
+                );
+                if (
+                  selectedOption &&
+                  (selectedOption.it_was_sold || selectedOption.rented)
+                ) {
+                  return; // Ignorar la selección si el departamento está vendido o alquilado
+                }
                 setSelectedApartment(e);
               }}
               size="md"
               comboboxProps={{ shadow: "xl" }}
-              styles={() => {
-                return {
-                  label: {
-                    fontSize: "14px",
-                  },
-                };
+              renderOption={({ option }) => {
+                if (option.it_was_sold) {
+                  return (
+                    <div
+                      className="flex flex-row w-full gap-10 items-center  cursor-not-allowed p-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                    >
+                      <p className="text-zinc-500">{option.label}</p>
+                      <Badge
+                        color="red"
+                        style={{
+                          opacity: 1,
+                          position: "absolute",
+                          left: 30,
+                        }}
+                      >
+                        vendido
+                      </Badge>
+                    </div>
+                  );
+                }
+                if (option.rented) {
+                  return (
+                    <div
+                      className="flex flex-row w-full gap-10 items-center  cursor-not-allowed p-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                    >
+                      <p className="text-zinc-500">{option.label}</p>
+                      <Badge
+                        color="blue"
+                        style={{
+                          opacity: 1,
+                          position: "absolute",
+                          left: 30,
+                        }}
+                      >
+                        ocupado
+                      </Badge>
+                    </div>
+                  );
+                }
+                return (
+                  <div className="flex flex-1 p-2">
+                    <h1>{option.label}</h1>
+                  </div>
+                );
+              }}
+              styles={{
+                label: {
+                  fontSize: "14px",
+                },
+                option: {
+                  padding: "0px",
+                },
               }}
             />
           </div>

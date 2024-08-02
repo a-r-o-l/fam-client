@@ -4,7 +4,7 @@ import { useAccountStore } from "../../store/useAccountStore";
 import Step0 from "./components/Step0";
 import WelcomeStepper from "./components/WelcomeStepper";
 
-const WelcomeModal = ({ open, onCloseModal }) => {
+const WelcomeModal = ({ open }) => {
   const { account } = useAccountStore();
   const [welcome, setWelcome] = useState(true);
 
@@ -20,7 +20,6 @@ const WelcomeModal = ({ open, onCloseModal }) => {
     <Modal
       withCloseButton={false}
       opened={open}
-      onClose={onCloseModal}
       centered
       size="lg"
       radius="md"

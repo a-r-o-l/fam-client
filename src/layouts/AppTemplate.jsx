@@ -1,27 +1,15 @@
-import {
-  AppShell,
-  Burger,
-  Group,
-  Text,
-  useMantineColorScheme,
-  Image,
-  BackgroundImage,
-} from "@mantine/core";
+import { AppShell, Burger, useMantineColorScheme, Image } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { createStyles } from "@mantine/styles";
 import navigationConfig from "../routes/navigationConfig";
-import {
-  NavLink,
-  Outlet,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
 import { UserMenu } from "../components/UserMenu/UserMenu";
 import UserModal from "../components/UserModal/UserModal";
 import { useAccountStore } from "../store/useAccountStore";
 import SubscriptionModal from "../components/SubscriptionModal/SubscriptionModal";
 import WelcomeModal from "../components/WelcomeModal/WelcomeModal";
 import SuccessModal from "../components/SuccessModal/SuccessModal";
+import CustomNavLink from "../components/CustomNavLink/CustomNavLink";
 export const AppTemplate = () => {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const { account, accessToken, setCreateSession } = useAccountStore();
@@ -85,13 +73,17 @@ export const AppTemplate = () => {
         navigate("/login");
       }
     } else {
-      if (status && status === "approved") {
+      if (status && status === "approved" && account.role !== "admin") {
         setSuccessModal(true);
       } else {
         // setSubscriptionModal(true);
-        if (account.is_new) {
+        if (account.is_new && account.role !== "admin") {
           setWelcomeModal(true);
-        } else if (account.status !== "active") {
+        } else if (
+          account.status !== "active" &&
+          account.status !== "free" &&
+          account.role !== "admin"
+        ) {
           setSubscriptionModal(true);
         }
       }
@@ -115,16 +107,22 @@ export const AppTemplate = () => {
       padding="xl"
     >
       <AppShell.Header>
-        <BackgroundImage
-          src="./stars_background.png"
-          className="flex flex-1 h-full"
+        <div
+          className="relative flex flex-1 bg-no-repeat bg-contain bg-left h-full bg-black"
+          // style={{ backgroundImage: "url('./cityBlack.png')" }}
         >
           <div className="flex justify-start absolute left-2 top-2">
             <Burger onClick={() => setOpened(!opened)} />
           </div>
           <div className="flex flex-1 justify-between items-center h-full px-10">
-            <div className="flex justify-center items-center w-1/6 px-3 pb-2 pt-4 rounded-xl">
-              <Image src="./complex2.png" fit="contain" />
+            <div className="flex justify-center items-center px-3 pb-2 pt-4 rounded-xl">
+              <Image
+                src="./complex.png"
+                fit="contain"
+                width={500}
+                height={500}
+                w={270}
+              />
             </div>
             <div>
               <UserMenu
@@ -136,7 +134,7 @@ export const AppTemplate = () => {
               />
             </div>
           </div>
-        </BackgroundImage>
+        </div>
       </AppShell.Header>
 
       <AppShell.Navbar p="md">
@@ -145,28 +143,12 @@ export const AppTemplate = () => {
             return null;
           }
           return (
-            <NavLink
-              align="left"
-              to={view.path}
+            <CustomNavLink
+              view={view}
+              classes={classes}
+              onClick={() => setOpened(false)}
               key={index}
-              color="blue"
-              onClick={() => {
-                setOpened(false);
-              }}
-              className={({ isActive }) => {
-                return (
-                  classes.navLink +
-                  " " +
-                  (isActive ? classes.navLinkActive : "")
-                );
-              }}
-            >
-              <Group>
-                {view.icon && <view.icon fontSize={25} />}
-
-                <Text size="xl">{view.name}</Text>
-              </Group>
-            </NavLink>
+            />
           );
         })}
       </AppShell.Navbar>

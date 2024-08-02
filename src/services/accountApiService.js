@@ -32,9 +32,33 @@ const findAccount = async (search_params) => {
   return response?.data;
 };
 
+const checkPassword = async (accountId, password) => {
+  const response = await http.post(`/account/password/check/${accountId}`, {
+    password,
+  });
+  return response?.data || false;
+};
+
+const createPassword = async (accountId, password) => {
+  const response = await http.post(`/account/password/${accountId}`, {
+    password,
+  });
+  return response?.data || false;
+};
+
+const updatePassword = async (accountId, password) => {
+  const response = await http.put(`/account/password/${accountId}`, {
+    password,
+  });
+  return response?.data || false;
+};
+
 export const accountApiService = {
   createSession,
   createAccount,
   updateAccount,
   findAccount,
+  checkPassword,
+  createPassword,
+  updatePassword,
 };

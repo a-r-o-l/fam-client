@@ -10,7 +10,7 @@ import { Avatar } from "@mui/material";
 
 const mercadopagoPublicKey = import.meta.env.VITE_MERCADOPAGO_PUBLIC_KEY;
 
-const SubscriptionModal = ({ open, onCloseModal }) => {
+const SubscriptionModal = ({ open }) => {
   initMercadoPago(mercadopagoPublicKey, {
     locale: "es-AR",
   });
@@ -126,7 +126,6 @@ const SubscriptionModal = ({ open, onCloseModal }) => {
     <Modal
       withCloseButton={false}
       opened={open}
-      onClose={onCloseModal}
       centered
       size="md"
       radius="md"

@@ -30,8 +30,6 @@ export const RentersTable = ({ renters, completeInfo }) => {
   const [renterToDelete, setRenterToDelete] = useState(null);
   const [openAlert, setOpenAlert] = useState(false);
 
-  console.log(renters);
-
   const onEdit = (itemId) => {
     navigate(`/renter/${itemId}`);
   };

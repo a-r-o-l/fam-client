@@ -10,6 +10,7 @@ import { OptionsScreen } from "../pages/Options/OptionsScreen";
 import { SubscriptionsScreen } from "../pages/Subscriptions/SubscriptionsScreen";
 import { SubscriptionSuccessScreen } from "../pages/Subscriptions/pages/SubscriptionSuccessScreen";
 import { LoginScreen } from "../pages/Login/LoginScreen";
+import { LoungeScreen } from "../pages/Lounge/LoungeScreen";
 import { AppTemplate } from "../layouts/AppTemplate";
 
 export const router = createBrowserRouter([
@@ -28,6 +29,18 @@ export const router = createBrowserRouter([
       {
         path: "/buildings",
         element: <BuildingScreen />,
+      },
+      {
+        path: "/houses",
+        element: <div>houses</div>,
+      },
+      {
+        path: "/lounges",
+        element: <LoungeScreen />,
+      },
+      {
+        path: "/apartments",
+        element: <div>apartments</div>,
       },
       {
         path: "/renters",

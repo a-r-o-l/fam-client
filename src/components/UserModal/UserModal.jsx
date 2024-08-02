@@ -4,7 +4,6 @@ import {
   Fieldset,
   Input,
   Modal,
-  PasswordInput,
   TextInput,
 } from "@mantine/core";
 import { FaMobileScreen, FaRegUser } from "react-icons/fa6";
@@ -19,11 +18,12 @@ import { toast } from "sonner";
 import { uploadImage } from "../../utils/uploadImage";
 import { useDeleteImageMutation } from "../../services/hooks/images/useImagesMutation";
 import SubscriptionBar from "./components/SubscriptionBar";
+import PasswordCreator from "./components/PasswordCreator";
+import PasswordEditor from "./components/PasswordEditor";
 const UserModal = ({ open, onCloseModal }) => {
   const { account, setCloseSession, accessToken } = useAccountStore();
   const [localImage, setLocalImage] = useState(null);
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const deleteImage = useDeleteImageMutation();
@@ -150,7 +150,7 @@ const UserModal = ({ open, onCloseModal }) => {
                 console.log(account);
               }}
             >
-              Activo
+              {account.status === "active" ? "Activo" : "Prueba"}
             </Badge>
             <div className="flex flex-col w-1/2 items-start mt-5 gap-1">
               <p className="text-xs">suscripcion</p>
@@ -176,14 +176,15 @@ const UserModal = ({ open, onCloseModal }) => {
               onChange={({ target }) => setUsername(target.value)}
             />
           </div>
-          <div className="w-full h-20">
+          {/* <div className="w-full h-20">
             <PasswordInput
               label="Contraseña"
               leftSection={<RiLockPasswordLine />}
               value={password}
+              disabled
               onChange={({ target }) => setPassword(target.value)}
             />
-          </div>
+          </div> */}
           <div className="w-full h-20">
             <TextInput
               leftSectionPointerEvents="none"
@@ -205,6 +206,9 @@ const UserModal = ({ open, onCloseModal }) => {
                 onChange={({ target }) => setPhone(target.value)}
               />
             </Input.Wrapper>
+          </div>
+          <div className="flex w-full py-5 justify-start">
+            {account.has_password ? <PasswordEditor /> : <PasswordCreator />}
           </div>
         </Fieldset>
         <div className="flex w-full mt-10 justify-end gap-10">

@@ -1,4 +1,4 @@
-import { ActionIcon, Menu, Switch } from "@mantine/core";
+import { Menu, Switch } from "@mantine/core";
 import { Avatar } from "@mui/material";
 import { useState } from "react";
 import { MdLogout, MdOutlineMessage } from "react-icons/md";
@@ -12,11 +12,13 @@ export const UserMenu = ({ onChangeTheme, theme, onOpenUserModal }) => {
   const [openAlert, setOpenAlert] = useState(false);
 
   return (
-    <Menu shadow="xl" width={250} position="bottom-end">
+    <Menu shadow="xl" position="bottom-end">
       <Menu.Target>
-        <ActionIcon variant="outline" size="xl" radius="xl" color="white">
-          <Avatar src={account?.image_url} />
-        </ActionIcon>
+        <Avatar
+          src={account?.image_url}
+          sx={{ width: 75, height: 75 }}
+          className="border-4"
+        />
       </Menu.Target>
 
       <Menu.Dropdown p={10}>

@@ -1,4 +1,4 @@
-import { Progress } from "@mantine/core";
+import { Progress, Text } from "@mantine/core";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 
@@ -16,19 +16,26 @@ function SubscriptionBar({ account }) {
       const today = dayjs();
       const start = dayjs(subscription?.start_date);
       const end = dayjs(subscription?.end_date);
-      const totalTime = end.diff(start, "day");
-      const totalDuration = end.diff(start, "day");
-      let timeRemaining = today.diff(start, "day");
-      const elapsedDuration = today.diff(start, "day");
 
-      const progressValue = Math.round((elapsedDuration / totalDuration) * 100);
+      const totalDuration = end.diff(start, "hour");
+      const elapsedDuration = today.diff(start, "hour");
+
+      const progressValue =
+        totalDuration > 0
+          ? Math.round((elapsedDuration / totalDuration) * 100)
+          : 0;
+
+      let timeRemaining = end.diff(today, "hour");
       timeRemaining = Math.max(0, timeRemaining);
-      timeRemaining = Math.min(timeRemaining, totalTime);
-      return { timeRemaining, totalTime, progressValue };
+      timeRemaining = Math.min(timeRemaining, totalDuration);
+
+      return { timeRemaining, totalDuration, progressValue, elapsedDuration };
     } else {
       return null;
     }
   }, [subscription]);
+
+  console.log(daysLeft);
 
   const progressColor = useMemo(() => {
     if (daysLeft?.progressValue < 25) {
@@ -53,11 +60,9 @@ function SubscriptionBar({ account }) {
         color={progressColor}
       />
       <div className="flex w-full justify-end">
-        {daysLeft && (
-          <p className="text-xs font-light text-white">
-            {daysLeft?.timeRemaining} / {daysLeft?.totalTime}
-          </p>
-        )}
+        <Text size="xs">
+          {daysLeft?.elapsedDuration || 0} / {daysLeft?.totalDuration}
+        </Text>
       </div>
     </div>
   );

@@ -19,3 +19,37 @@ export const useCreateAccountMutation = (params, options) => {
     ...options,
   });
 };
+
+export const useCreatePasswordtMutation = (params, options) => {
+  return useMutation({
+    mutationFn: (params) => {
+      return accountApiService.createPassword(
+        params.accountId,
+        params.password
+      );
+    },
+    ...options,
+  });
+};
+
+export const useUpdatePasswordtMutation = (params, options) => {
+  return useMutation({
+    mutationFn: (params) => {
+      return accountApiService.updatePassword(
+        params.accountId,
+        params.password
+      );
+    },
+    ...options,
+  });
+};
+
+export const useCheckPasswordtMutation = (params, options) => {
+  return useMutation({
+    mutationFn: (params) => {
+      return accountApiService.checkPassword(params.accountId, params.password);
+    },
+
+    ...options,
+  });
+};

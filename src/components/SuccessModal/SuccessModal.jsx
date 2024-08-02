@@ -2,7 +2,7 @@ import { Image, Modal } from "@mantine/core";
 import { useAccountStore } from "../../store/useAccountStore";
 import { useEffect, useState } from "react";
 import { Progress } from "@mantine/core";
-const SuccessModal = ({ open, onCloseModal, status }) => {
+const SuccessModal = ({ open, status }) => {
   const { setCloseSession } = useAccountStore();
   const [progress, setProgress] = useState(0);
 
@@ -30,7 +30,6 @@ const SuccessModal = ({ open, onCloseModal, status }) => {
     <Modal
       withCloseButton={false}
       opened={open}
-      onClose={onCloseModal}
       centered
       size="lg"
       radius="md"

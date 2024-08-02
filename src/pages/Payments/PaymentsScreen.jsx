@@ -260,7 +260,7 @@ export const PaymentsScreen = () => {
               ))
             ) : (
               <Table.Tr>
-                <Table.Td colSpan={7} className="col-span-7 text-center h-80">
+                <Table.Td colSpan={9} className="col-span-7 text-center h-80">
                   <Text>No hay pagos</Text>
                 </Table.Td>
               </Table.Tr>

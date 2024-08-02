@@ -3,9 +3,19 @@ import { buildingsApiService } from "../../buildingsApiService";
 
 export const useGetBuildingsQuery = (params, options) => {
   return useQuery({
-    queryKey: ["getBuildings"],
+    queryKey: ["getProperties"],
     queryFn: () => {
-      return buildingsApiService.getBuildings(params);
+      return buildingsApiService.getProperties(params);
+    },
+    ...options,
+  });
+};
+
+export const useGetBuildingsByTypeQuery = (params, options) => {
+  return useQuery({
+    queryKey: ["getProperties"],
+    queryFn: () => {
+      return buildingsApiService.getPropertiesByType(params);
     },
     ...options,
   });

@@ -1,7 +1,7 @@
 import { http } from "./http";
 
 const getBuilding = async (id) => {
-  const response = await http.get(`/buildings/${id}`);
+  const response = await http.get(`/property/${id}`);
   if (response?.data) {
     return response.data;
   } else {
@@ -9,8 +9,17 @@ const getBuilding = async (id) => {
   }
 };
 
-const getBuildings = async () => {
-  const response = await http.get(`/buildings`);
+const getProperties = async () => {
+  const response = await http.get(`/property`);
+  if (response?.data) {
+    return response.data;
+  } else {
+    return false;
+  }
+};
+
+const getPropertiesByType = async (params) => {
+  const response = await http.get(`/property?type=${params.type}`);
   if (response?.data) {
     return response.data;
   } else {
@@ -19,7 +28,7 @@ const getBuildings = async () => {
 };
 
 const createBuilding = async (data) => {
-  const response = await http.post(`/buildings`, data);
+  const response = await http.post(`/property`, data);
   if (response?.data) {
     return response.data;
   } else {
@@ -28,7 +37,7 @@ const createBuilding = async (data) => {
 };
 
 const updateBuilding = async (id, data) => {
-  const response = await http.put(`/buildings/${id}`, data);
+  const response = await http.put(`/property/${id}`, data);
   if (response?.data) {
     return response.data;
   } else {
@@ -36,8 +45,8 @@ const updateBuilding = async (id, data) => {
   }
 };
 
-const deleteBuilding = async (id) => {
-  const response = await http.delete(`/buildings/${id}`);
+const deleteBuilding = async (param) => {
+  const response = await http.delete(`/property/${param.id}`);
   if (response?.data) {
     return response.data;
   } else {
@@ -47,8 +56,9 @@ const deleteBuilding = async (id) => {
 
 export const buildingsApiService = {
   getBuilding,
-  getBuildings,
+  getProperties,
   createBuilding,
   updateBuilding,
   deleteBuilding,
+  getPropertiesByType,
 };

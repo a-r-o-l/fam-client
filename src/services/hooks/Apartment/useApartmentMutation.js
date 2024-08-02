@@ -9,7 +9,7 @@ export const useUpdateApartmentMutation = (params, options) => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries("getBuildings");
-      await queryClient.invalidateQueries("getApartments");
+      // await queryClient.invalidateQueries("getApartments");
     },
     ...options,
   });
