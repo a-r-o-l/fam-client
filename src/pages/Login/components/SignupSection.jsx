@@ -122,7 +122,8 @@ export const SignupSection = ({ setLogging, logging, setLoginMode }) => {
         user_name: userName,
         password,
         verified: true,
-        role: "user",
+        role: secret ? "admin" : "user",
+        is_new: secret ? false : true,
       },
       {
         onSuccess: (response) => {
@@ -300,7 +301,6 @@ export const SignupSection = ({ setLogging, logging, setLoginMode }) => {
           />
           <div className="mt-20 w-full flex justify-center flex-col gap-5">
             <Button
-              color="black"
               variant="filled"
               radius="xl"
               size="md"

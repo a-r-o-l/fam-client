@@ -77,7 +77,7 @@ function ApartmentTr({ building, onEdit }) {
       </Table.Tr>
     ));
   } else {
-    return <div>no apartments yet</div>;
+    return <div>El edificio no tiene departamentos creados aún</div>;
   }
 }
 

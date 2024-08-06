@@ -169,17 +169,12 @@ export const BuildingForm = ({ building, onClose }) => {
       <div className="flex w-11/12 flex-col gap-5 rounded-lg">
         <div className="flex w-full justify-center items-center">
           <div className="relative self-start">
-            {!building?.image_url || localImage ? (
-              <Avatar
-                className="w-20 h-20  font-bold border-4 border-white"
-                sx={{ width: 87, height: 87 }}
-                src={srcImg}
-              />
-            ) : (
-              <div className="flex justify-center items-center w-14 h-14 border-2 rounded-full bg-black">
-                <Building size={30} color="white" />
-              </div>
-            )}
+            <Avatar
+              className="w-20 h-20  font-bold border-4 border-white"
+              sx={{ width: 87, height: 87 }}
+              src={srcImg}
+            />
+
             <ActionIcon
               radius="xl"
               pos="absolute"
@@ -293,7 +288,7 @@ export const BuildingForm = ({ building, onClose }) => {
               <Radio value="sd" label="Solo Depto" description="(1)" />
             </Group>
           </Radio.Group>
-          <div className="flex justify-center items-end">
+          <div className="flex justify-center items-end h-20">
             <NumberInput
               disabled={!!building}
               withAsterisk
@@ -328,7 +323,6 @@ export const BuildingForm = ({ building, onClose }) => {
           >
             {building ? "Guardar" : "Registrar"}
           </Button>
-          <Button onClick={() => {}}>test</Button>
         </div>
       </div>
     </div>
