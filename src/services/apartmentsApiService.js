@@ -10,9 +10,12 @@ const getApartment = async (id) => {
 };
 
 const getApartments = async (params) => {
-  const response = await http.get(
-    `/apartments${params.BuildingId ? `?buildingId=${params.BuildingId}` : ""}`
-  );
+  let response;
+  if (params.buildingId) {
+    response = await http.get(`/apartments?buildingId=${params.buildingId}`);
+  } else {
+    response = await http.get(`/apartments`);
+  }
   if (response?.data) {
     return response.data;
   } else {

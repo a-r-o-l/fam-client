@@ -18,7 +18,7 @@ export const useDeleteBuildingMutation = (params, options) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (params) => {
-      return buildingsApiService.deleteBuilding(params);
+      return buildingsApiService.deleteBuilding(params.id);
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries("getBuildings");

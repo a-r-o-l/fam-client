@@ -19,6 +19,8 @@ import { toast } from "sonner";
 import { uploadImage } from "../../utils/uploadImage";
 import { useDeleteImageMutation } from "../../services/hooks/images/useImagesMutation";
 import SubscriptionBar from "./components/SubscriptionBar";
+import PasswordCreator from "./components/PasswordCreator";
+import PasswordEditor from "./components/PasswordEditor";
 const UserModal = ({ open, onCloseModal }) => {
   const { account, setCloseSession, accessToken } = useAccountStore();
   const [localImage, setLocalImage] = useState(null);
@@ -176,14 +178,7 @@ const UserModal = ({ open, onCloseModal }) => {
               onChange={({ target }) => setUsername(target.value)}
             />
           </div>
-          <div className="w-full h-20">
-            <PasswordInput
-              label="Contraseña"
-              leftSection={<RiLockPasswordLine />}
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
+
           <div className="w-full h-20">
             <TextInput
               leftSectionPointerEvents="none"
@@ -205,6 +200,9 @@ const UserModal = ({ open, onCloseModal }) => {
                 onChange={({ target }) => setPhone(target.value)}
               />
             </Input.Wrapper>
+          </div>
+          <div className="flex w-full py-5 justify-start">
+            {account.has_password ? <PasswordEditor /> : <PasswordCreator />}
           </div>
         </Fieldset>
         <div className="flex w-full mt-10 justify-end gap-10">

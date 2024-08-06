@@ -4,7 +4,7 @@ import { BuildingScreen } from "../pages/Building/BuildingScreen";
 import { RentersScreen } from "../pages/Renters/RentersScreen";
 import { HistoryScreen } from "../pages/History/HistoryScreen";
 import { RenterScreen } from "../pages/Renter/RenterScreen";
-import { AnalitycsScreen } from "../pages/Analitycs/AnalitycsScreen";
+
 import { WorkInProgressScreen } from "../pages/WorkInProgress/WorkInProgressScreen";
 import { OptionsScreen } from "../pages/Options/OptionsScreen";
 import { SubscriptionsScreen } from "../pages/Subscriptions/SubscriptionsScreen";
@@ -60,6 +60,18 @@ export const router = createBrowserRouter([
       {
         path: "/subscriptions-failure",
         element: <SubscriptionSuccessScreen />,
+      },
+      {
+        path: "/houses",
+        element: <div>houses</div>,
+      },
+      {
+        path: "/lounges",
+        element: <div>lounges</div>,
+      },
+      {
+        path: "/apartments",
+        element: <div>apartments</div>,
       },
     ],
   },

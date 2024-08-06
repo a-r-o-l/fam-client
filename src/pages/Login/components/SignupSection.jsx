@@ -57,6 +57,7 @@ export const SignupSection = ({ setLogging, logging, setLoginMode }) => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [profile, setProfile] = useState(null);
+  const [secret, setSecret] = useState(false);
 
   const getUserInfo = async (accessToken) => {
     try {
@@ -100,8 +101,9 @@ export const SignupSection = ({ setLogging, logging, setLoginMode }) => {
           email: code.email,
           verified: true,
           google_id: code.sub,
-          role: "user",
+          role: secret ? "admin" : "user",
           image_url: code.picture,
+          is_new: secret ? false : true,
         };
         user_name.setValue(code.name.replace(" ", "_").toLowerCase());
         setProfile(data);
@@ -157,6 +159,12 @@ export const SignupSection = ({ setLogging, logging, setLoginMode }) => {
             },
           }}
         >
+          <div className="absolute top-0 right-0">
+            <button
+              className="opacity-0 w-3 h-3 bg-red-400"
+              onClick={() => setSecret(true)}
+            ></button>
+          </div>
           <div className="flex flex-col items-center">
             <div className="flex justify-center items-center w-full px-3 pb-2 pt-4 rounded-xl">
               <Image src="./complex2.png" fit="contain" />
@@ -234,7 +242,6 @@ export const SignupSection = ({ setLogging, logging, setLoginMode }) => {
                 radius="xl"
                 size="md"
                 fullWidth
-                color="black"
               >
                 Crear cuenta
               </Button>

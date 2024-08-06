@@ -55,34 +55,6 @@ export const RenterForm = ({ onCancel, renter = null }) => {
     return url.substring(url.lastIndexOf("/") + 1);
   }, []);
 
-  // const onImageChange2 = async (e) => {
-  //   const files = e.target.files;
-  //   const file = files[0];
-
-  //   const data = new FormData();
-  //   data.append("image", file);
-
-  //   try {
-  //     // Reemplaza 'http://localhost:3000/upload' con la URL de tu endpoint
-  //     const response = await fetch(
-  //       "https://fam-api-production.up.railway.app/uploads",
-  //       {
-  //         method: "POST",
-  //         body: data,
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error("Error al subir el archivo");
-  //     }
-
-  //     const responseData = await response.json();
-  //     console.log(responseData); // Aquí puedes manejar la respuesta del servidor
-  //   } catch (error) {
-  //     console.error(error); // Aquí puedes manejar los errores
-  //   }
-  // };
-
   const srcImg = useMemo(() => {
     if (localImage) {
       const urlimg = URL.createObjectURL(localImage);
@@ -118,19 +90,6 @@ export const RenterForm = ({ onCancel, renter = null }) => {
           toast.error("Error al subir la imagen");
           console.error(error);
         }
-        // data.append("file", localImage);
-        // data.append("upload_preset", "images");
-        // const res = await fetch(
-        //   "https://api.cloudinary.com/v1_1/dbb2vknkm/image/upload",
-        //   {
-        //     method: "POST",
-        //     body: data,
-        //   }
-        // );
-        // imgUrl = await res.json();
-        // if (imgUrl?.secure_url) {
-        //   payload.image_url = imgUrl?.secure_url;
-        // }
       }
       if (renter) {
         updateRenter.mutate(

@@ -1,42 +1,64 @@
-import { IoIosNotificationsOutline } from "react-icons/io";
-import { GiSettingsKnobs } from "react-icons/gi";
-import { IoHomeOutline } from "react-icons/io5";
-import { PiMoneyLight } from "react-icons/pi";
-import { LiaBuilding } from "react-icons/lia";
-import { MdPeopleOutline } from "react-icons/md";
+import {
+  Banknote,
+  Building,
+  Building2,
+  DoorClosed,
+  Home,
+  House,
+  Settings2,
+  StoreIcon,
+  Users,
+} from "lucide-react";
 
 const navigationConfig = [
   {
     path: "/",
     name: "Inicio",
-    icon: IoHomeOutline,
+    icon: Home,
   },
   {
     path: "/payments",
     exact: true,
     name: "Pagos",
-    icon: PiMoneyLight,
+    icon: Banknote,
   },
   {
     path: "/buildings",
-    name: "Complejos",
-    icon: LiaBuilding,
+    name: "Propiedades",
+    icon: Building2,
+    children: [
+      {
+        path: "/buildings",
+        name: "Edificios",
+        icon: Building,
+      },
+      {
+        path: "/houses",
+        name: "Casas",
+        icon: House,
+      },
+      {
+        path: "/lounges",
+        name: "Salones",
+        icon: StoreIcon,
+      },
+      {
+        path: "/apartments",
+        name: "Departamentos",
+        icon: DoorClosed,
+      },
+    ],
   },
   {
     path: "/renters",
     name: "Inquilinos",
-    icon: MdPeopleOutline,
+    icon: Users,
   },
 
   {
     path: "/options",
     name: "Opciones",
-    icon: GiSettingsKnobs,
-  },
-  {
-    path: "/subscriptions",
-    name: "Suscripcion",
-    icon: IoIosNotificationsOutline,
+    icon: Settings2,
   },
 ];
 

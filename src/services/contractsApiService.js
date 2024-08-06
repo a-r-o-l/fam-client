@@ -45,10 +45,20 @@ const deleteContract = async (id) => {
   }
 };
 
+const cancelContract = async (data) => {
+  const response = await http.post(`/contracts/cancel`, data);
+  if (response?.data) {
+    return response.data;
+  } else {
+    return false;
+  }
+};
+
 export const contractsApiService = {
   getContract,
   getContracts,
   createContract,
   updateContract,
   deleteContract,
+  cancelContract,
 };

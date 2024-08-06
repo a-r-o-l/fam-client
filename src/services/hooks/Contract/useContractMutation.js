@@ -39,3 +39,12 @@ export const useDeleteContractMutation = (params, options) => {
     ...options,
   });
 };
+
+export const useCancelContractMutation = (params, options) => {
+  return useMutation({
+    mutationFn: (params) => {
+      return contractsApiService.cancelContract(params);
+    },
+    ...options,
+  });
+};
