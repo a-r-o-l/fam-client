@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { MonthPickerInput } from "@mantine/dates";
 import dayjs from "dayjs";
-import ApexCharts from "apexcharts";
 import { useMemo, useState } from "react";
 import { CChartBar } from "@coreui/react-chartjs";
 
