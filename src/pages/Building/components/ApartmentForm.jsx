@@ -5,8 +5,7 @@ import {
 import { TextInput, Button, Text, Select } from "@mantine/core";
 import { useField } from "@mantine/form";
 import { toast } from "sonner";
-import { CaseUpper, CircleHelp, DoorClosed, Hash } from "lucide-react";
-import HelpPopover from "../../../components/HelpPopover/HelpPopover";
+import { DoorClosed, Hash } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 function ApartmentForm({ apt, building, onClose }) {
@@ -107,11 +106,6 @@ function ApartmentForm({ apt, building, onClose }) {
             label={
               <div className="flex flex-1 w-full flex-row gap-2 items-center justify-between">
                 <Text>Identificacion</Text>
-                {/* <HelpPopover
-                  icon={<CircleHelp size={18} />}
-                  title="Identificación"
-                  description="Selecciona el tipo de identificación que tendrá el departamento"
-                /> */}
               </div>
             }
             data={[
@@ -165,7 +159,7 @@ function ApartmentForm({ apt, building, onClose }) {
             variant="light"
             loading={createApartment.isPending || updateApartment.isPending}
             onClick={() => {
-              const floor = floorField.getValue();
+              const floor = floorField.getValue() || null;
               const apt = aptField.getValue();
               const data = {
                 floor,

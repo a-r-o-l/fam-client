@@ -153,10 +153,11 @@ export const PaymentsScreen = () => {
 
   return (
     <div className="flex flex-1 flex-col h-full">
-      <div className="flex flex-row items-center gap-10">
+      <div className="flex flex-row items-center justify-start gap-10">
         <Group preventGrowOverflow maw={400}>
           <MultiSelect
             data={buildingSelect}
+            placeholder="Buscar por edificio"
             value={selectedBuilding}
             onChange={setSelectedBuilding}
             leftSection={<FaBuilding />}
@@ -178,9 +179,10 @@ export const PaymentsScreen = () => {
             }}
           />
         </Group>
-        <Group preventGrowOverflow w={500}>
+        <Group preventGrowOverflow w={300}>
           <MSelect
             leftSection={<FaUserLarge />}
+            placeholder="Buscar por inquilino"
             data={rentersSelect}
             value={selectedRenter}
             onChange={(e) => {
@@ -188,8 +190,8 @@ export const PaymentsScreen = () => {
             }}
             size="md"
             comboboxProps={{ shadow: "md" }}
-            maw={400}
-            miw={400}
+            // maw={400}
+            // miw={400}
             styles={{
               dropdown: {
                 color: switchColor,
@@ -202,8 +204,8 @@ export const PaymentsScreen = () => {
             }}
           />
         </Group>
-        <div className="flex flex-1 h-20 items-center justify-end pr-10">
-          <div className="flex flex-row items-center flex-1 gap-20">
+        <div className="flex flex-1 h-20 items-center justify-center pr-10">
+          <div className="flex flex-row items-center justify-center flex-1 gap-10">
             <Checkbox
               defaultChecked
               label="pagados"
@@ -217,15 +219,17 @@ export const PaymentsScreen = () => {
               onChange={() => setCheck2(!check2)}
             />
           </div>
-          <ActionIcon
-            variant="filled"
-            radius="xl"
-            size="xl"
-            onClick={() => setOpened(true)}
-            bg="famblue.4"
-          >
-            <FaPlus />
-          </ActionIcon>
+          <div className="flex h-20 items-center justify-end pr-10 gap-20">
+            <ActionIcon
+              variant="filled"
+              radius="xl"
+              size="xl"
+              onClick={() => setOpened(true)}
+              bg="famblue.4"
+            >
+              <FaPlus />
+            </ActionIcon>
+          </div>
         </div>
       </div>
       <Table.ScrollContainer minWidth={900} type="native" h={650} mt={40}>
@@ -233,8 +237,11 @@ export const PaymentsScreen = () => {
           layout="fixed"
           stickyHeader
           striped="even"
-          verticalSpacing={20}
+          verticalSpacing="sm"
+          horizontalSpacing="sm"
           highlightOnHover
+          align="left"
+          withTableBorder
         >
           <Table.Thead bg={colorScheme === "dark" ? "dark.9" : "gray.2"}>
             <Table.Tr>
@@ -260,7 +267,7 @@ export const PaymentsScreen = () => {
               ))
             ) : (
               <Table.Tr>
-                <Table.Td colSpan={7} className="col-span-7 text-center h-80">
+                <Table.Td colSpan={9} className="col-span-7 text-center h-80">
                   <Text>No hay pagos</Text>
                 </Table.Td>
               </Table.Tr>

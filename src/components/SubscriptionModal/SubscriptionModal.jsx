@@ -19,21 +19,23 @@ const SubscriptionModal = ({ open, onCloseModal }) => {
   const createPreference = usePreferenceMutation();
 
   useEffect(() => {
-    const data = {
-      title: "Suscripcion",
-      unit_price: 100,
-      id: v4(),
-      description: "Suscripcion mensual",
-    };
-    createPreference.mutate(data, {
-      onSuccess: (response) => {
-        setPreferenceId(response.result.id);
-      },
-      onError: (error) => {
-        toast.error("Error al crear la preferencia", error);
-      },
-    });
-  }, []);
+    if (open) {
+      const data = {
+        title: "Suscripcion",
+        unit_price: 100,
+        id: v4(),
+        description: "Suscripcion mensual",
+      };
+      createPreference.mutate(data, {
+        onSuccess: (response) => {
+          setPreferenceId(response.result.id);
+        },
+        onError: (error) => {
+          toast.error("Error al crear la preferencia", error);
+        },
+      });
+    }
+  }, [open]);
 
   const renderBody = useCallback(() => {
     if (createPreference.isPending) {

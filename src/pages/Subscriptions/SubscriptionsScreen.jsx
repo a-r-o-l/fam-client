@@ -5,14 +5,14 @@ import { FirstSubscription } from "./components/FirstSubscription";
 
 export const SubscriptionsScreen = () => {
   const { account } = useAccountStore();
+  return <></>;
+  // if (!account?.Subscriptions?.length) {
+  //   return <FirstSubscription />;
+  // }
 
-  if (!account?.Subscriptions?.length) {
-    return <FirstSubscription />;
-  }
+  // if (account.status === "expired") {
+  //   return <ExpiredSubscription />;
+  // }
 
-  if (account.status === "expired") {
-    return <ExpiredSubscription />;
-  }
-
-  return <ActiveSubscription />;
+  // return <ActiveSubscription />;
 };

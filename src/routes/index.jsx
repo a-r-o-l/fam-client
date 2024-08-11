@@ -4,13 +4,14 @@ import { BuildingScreen } from "../pages/Building/BuildingScreen";
 import { RentersScreen } from "../pages/Renters/RentersScreen";
 import { HistoryScreen } from "../pages/History/HistoryScreen";
 import { RenterScreen } from "../pages/Renter/RenterScreen";
-
-import { WorkInProgressScreen } from "../pages/WorkInProgress/WorkInProgressScreen";
 import { OptionsScreen } from "../pages/Options/OptionsScreen";
-import { SubscriptionsScreen } from "../pages/Subscriptions/SubscriptionsScreen";
 import { SubscriptionSuccessScreen } from "../pages/Subscriptions/pages/SubscriptionSuccessScreen";
 import { LoginScreen } from "../pages/Login/LoginScreen";
+import { AnalyticsScreen } from "../pages/Analytics/AnalyticsScreen";
 import { AppTemplate } from "../layouts/AppTemplate";
+import Home from "../pages/Home/Home";
+import NotFoundScreen from "../pages/NotFound/NotFoundScreen";
+import HouseScreen from "../pages/House/HouseScreen";
 
 export const router = createBrowserRouter([
   {
@@ -19,7 +20,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <WorkInProgressScreen />,
+        element: <Home />,
       },
       {
         path: "/payments",
@@ -45,10 +46,10 @@ export const router = createBrowserRouter([
         path: "/options",
         element: <OptionsScreen />,
       },
-      {
-        path: "/subscriptions",
-        element: <SubscriptionsScreen />,
-      },
+      // {
+      //   path: "/subscriptions",
+      //   element: <SubscriptionsScreen />,
+      // },
       {
         path: "/subscriptions-success",
         element: <SubscriptionSuccessScreen />,
@@ -63,7 +64,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/houses",
-        element: <div>houses</div>,
+        element: <HouseScreen />,
       },
       {
         path: "/lounges",
@@ -72,6 +73,14 @@ export const router = createBrowserRouter([
       {
         path: "/apartments",
         element: <div>apartments</div>,
+      },
+      {
+        path: "/analytics",
+        element: <AnalyticsScreen />,
+      },
+      {
+        path: "/*",
+        element: <NotFoundScreen />,
       },
     ],
   },

@@ -30,17 +30,17 @@ export const RenterRowItem = ({
   }, [item]);
 
   return (
-    <Table.Tr key={item.id} onClick={() => console.log(item)}>
-      <Table.Td align="left">
+    <Table.Tr key={item.id}>
+      <Table.Td>
         <Indicator
           inline
-          size={14}
+          size={12}
           offset={7}
           position="bottom-end"
           color={isRenting ? "green" : "red"}
           withBorder
         >
-          <Avatar src={item.image_url} size="lg" />
+          <Avatar src={item.image_url} size="md" />
         </Indicator>
       </Table.Td>
       <RenterTd value={item.name} render={completeInfo} />
@@ -54,14 +54,14 @@ export const RenterRowItem = ({
           "uppercase"
         )}
         color={isRenting ? "green" : "dark.2"}
-        fw={900}
+        fw={600}
       />
       <RenterTd
         value={contract?.Apartment?.number || ""}
         color={isRenting ? "green" : "dark.2"}
-        fw={900}
+        fw={600}
       />
-      <Table.Td align="left">
+      <Table.Td>
         <NumberFormatter
           prefix="$ "
           value={

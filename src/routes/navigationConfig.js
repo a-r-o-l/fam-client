@@ -2,6 +2,7 @@ import {
   Banknote,
   Building,
   Building2,
+  ChartNoAxesColumn,
   DoorClosed,
   Home,
   House,
@@ -59,6 +60,11 @@ const navigationConfig = [
     path: "/options",
     name: "Opciones",
     icon: Settings2,
+  },
+  {
+    path: "/analytics",
+    name: "Analiticas",
+    icon: ChartNoAxesColumn,
   },
 ];
 

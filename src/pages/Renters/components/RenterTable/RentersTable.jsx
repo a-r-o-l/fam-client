@@ -30,8 +30,6 @@ export const RentersTable = ({ renters, completeInfo }) => {
   const [renterToDelete, setRenterToDelete] = useState(null);
   const [openAlert, setOpenAlert] = useState(false);
 
-  console.log(renters);
-
   const onEdit = (itemId) => {
     navigate(`/renter/${itemId}`);
   };
@@ -67,13 +65,13 @@ export const RentersTable = ({ renters, completeInfo }) => {
   return (
     <Table.ScrollContainer minWidth={900} type="native" h={650}>
       <Table
+        layout="fixed"
         stickyHeader
         striped="even"
         verticalSpacing="sm"
-        horizontalSpacing="xl"
+        horizontalSpacing="sm"
         highlightOnHover
         align="left"
-        // withColumnBorders
         withTableBorder
       >
         <Table.Thead bg={colorScheme === "dark" ? "dark.9" : "gray.2"}>

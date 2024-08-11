@@ -42,7 +42,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               locale: "es",
               firstDayOfWeek: 0,
               weekendDays: [0],
-              timezone: "UTC",
             }}
           >
             <RouterProvider router={router} />

@@ -1,9 +1,7 @@
 import { ActionIcon } from "@mantine/core";
-import React from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 
 export const BackButton = ({ backTo, ...rest }) => {
-  console.log(backTo);
   return (
     <ActionIcon
       {...rest}

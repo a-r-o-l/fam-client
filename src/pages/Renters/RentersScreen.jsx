@@ -104,6 +104,7 @@ export const RentersScreen = () => {
               data={buildingSelectData}
               value={selectedBuilding}
               onChange={setSelectedBuilding}
+              placeholder="Buscar por edificio"
               leftSection={<FaBuilding />}
               size="md"
               comboboxProps={{ shadow: "md" }}
@@ -125,7 +126,7 @@ export const RentersScreen = () => {
           </Group>
           <Group preventGrowOverflow w={300}>
             <Input
-              placeholder="Buscar inquilino"
+              placeholder="Buscar por inquilino"
               leftSection={<FaUserLarge />}
               rightSection={
                 searchParam ? (

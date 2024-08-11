@@ -1,21 +1,8 @@
-import {
-  AppShell,
-  Burger,
-  Group,
-  Text,
-  useMantineColorScheme,
-  Image,
-  BackgroundImage,
-} from "@mantine/core";
+import { AppShell, Burger, useMantineColorScheme, Image } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { createStyles } from "@mantine/styles";
 import navigationConfig from "../routes/navigationConfig";
-import {
-  NavLink,
-  Outlet,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
 import { UserMenu } from "../components/UserMenu/UserMenu";
 import UserModal from "../components/UserModal/UserModal";
 import { useAccountStore } from "../store/useAccountStore";
@@ -89,7 +76,6 @@ export const AppTemplate = () => {
       if (status && status === "approved" && account.role !== "admin") {
         setSuccessModal(true);
       } else {
-        // setSubscriptionModal(true);
         if (account.is_new && account.role !== "admin") {
           setWelcomeModal(true);
         } else if (

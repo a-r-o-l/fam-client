@@ -6,6 +6,7 @@ import {
   ScrollArea,
   Table,
   Text,
+  Title,
   useMantineColorScheme,
 } from "@mantine/core";
 import { useGetBuildingsQuery } from "../../services/hooks/Building/useBuildingQuery";
@@ -58,11 +59,11 @@ export const BuildingScreen = () => {
 
   return (
     <div className="flex flex-1 flex-row overflow-hidden mt-20">
-      <div className="flex flex-col px-10 w-1/4">
+      <div className="flex flex-col px-10 w-1/3">
         <div className="flex w-full items-center justify-between px-3 py-3 rounded-lg mb-5 text-neutral-300">
           <div className="flex flex-row items-center gap-4">
-            <Building size={25} color={isDark ? "white" : "black"} />
-            <h1 className="font-bold text-2xl">Mis edificios</h1>
+            <Building size={20} />
+            <Title order={3}>Mis edificios</Title>
           </div>
           <ActionIcon
             size="lg"
@@ -81,6 +82,7 @@ export const BuildingScreen = () => {
                 key={building.id}
                 label={building?.name?.toUpperCase() ?? ""}
                 description={building.address}
+                p={10}
                 rightSection={
                   <BuildingMenu building={building} onEdit={onEditBuilding} />
                 }
@@ -100,6 +102,9 @@ export const BuildingScreen = () => {
                 styles={{
                   label: { fontSize: 20 },
                   description: { fontSize: 15 },
+                  root: {
+                    borderRadius: 20,
+                  },
                 }}
               />
             ))
@@ -117,7 +122,7 @@ export const BuildingScreen = () => {
       <Divider size="sm" color="gray" orientation="vertical" />
       <div className="flex flex-1 flex-col px-10">
         <div className="flex w-full items-center justify-center gap-20 px-5 py-3 rounded-lg mb-5 text-neutral-300">
-          <h1 className="font-bold text-2xl">Departamentos</h1>
+          <Title order={3}>Departamentos</Title>
           <ActionIcon
             radius="xl"
             color="blue"
@@ -130,27 +135,35 @@ export const BuildingScreen = () => {
           </ActionIcon>
         </div>
         <Table.ScrollContainer type="native" h={500} px={10}>
-          <Table verticalSpacing="lg" stickyHeader mah={500}>
+          <Table
+            verticalSpacing="sm"
+            stickyHeader
+            // layout="fixed"
+            horizontalSpacing="sm"
+            highlightOnHover
+            // align="left"
+            withTableBorder
+          >
             <Table.Thead bg={colorScheme === "dark" ? "dark.9" : "gray.2"}>
               <Table.Tr>
                 {selectedBuilding?.apartments_with_floor && (
-                  <Table.Th width={200}>
+                  <Table.Th>
                     <p>Piso</p>
                   </Table.Th>
                 )}
-                <Table.Th width={200}>
+                <Table.Th>
                   <p>Depto</p>
                 </Table.Th>
-                <Table.Th align="left">
+                <Table.Th>
                   <p>Estado</p>
                 </Table.Th>
-                <Table.Th align="left">
+                <Table.Th>
                   <p>Fin del contrato</p>
                 </Table.Th>
                 <Table.Th>
                   <p>Inquilino</p>
                 </Table.Th>
-                <Table.Th width={200}>Acciones</Table.Th>
+                <Table.Th>Acciones</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>

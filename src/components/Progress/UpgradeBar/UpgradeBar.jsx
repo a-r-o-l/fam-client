@@ -59,11 +59,11 @@ export const UpgradeBar = ({ item }) => {
             {daysLeft.tiempoTranscurrido} / {daysLeft.tiempoTotal}
           </p>
         </div>
-        <div className="min-w-40">
+        <div className="min-w-24">
           <Progress
             value={daysLeft.progressValue}
             color={progressColor}
-            size="md"
+            size="sm"
           />
         </div>
       </div>

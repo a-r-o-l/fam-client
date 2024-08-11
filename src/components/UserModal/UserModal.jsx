@@ -138,8 +138,9 @@ const UserModal = ({ open, onCloseModal }) => {
         <div className="flex flex-row w-full justify-start items-center gap-4">
           <div className="flex items-center justify-center pl-4">
             <ImagePicker
-              avh={120}
-              avw={120}
+              avh={100}
+              avw={100}
+              top={75}
               imgSrc={srcImg}
               onImgChanged={onImageChange}
             />

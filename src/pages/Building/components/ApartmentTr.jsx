@@ -49,7 +49,7 @@ function ApartmentTr({ building, onEdit }) {
       const contract = apt?.Contracts[0];
       return (
         <Table.Td>
-          <p>{`${dayjs(contract.start_date).format("DD/MM/YY")}`}</p>
+          <p>{`${dayjs(contract.end_date).format("DD/MM/YY")}`}</p>
         </Table.Td>
       );
     }
@@ -64,9 +64,7 @@ function ApartmentTr({ building, onEdit }) {
           <Table.Td width={200}>{apt.floor || ""}</Table.Td>
         )}
         <Table.Td width={200}>
-          {/* <div className="w-8 h-8 rounded-full flex justify-center items-center text-neutral-400 font-black bg-neutral-700"> */}
           {apt?.floor ? apt.number.toUpperCase() : apt.number}
-          {/* </div> */}
         </Table.Td>
         <Table.Td align="left">{renderBadge(apt)}</Table.Td>
         {renderInitContract(apt)}

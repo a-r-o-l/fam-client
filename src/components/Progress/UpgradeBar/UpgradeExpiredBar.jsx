@@ -177,8 +177,8 @@ export const UpgradeExpiredBar = ({ progressColor, progressValue, item }) => {
           </Popover.Dropdown>
         </Popover>
       </div>
-      <div className="min-w-40">
-        <Progress value={progressValue} color={progressColor} size="md" />
+      <div className="min-w-24">
+        <Progress value={progressValue} color={progressColor} size="sm" />
       </div>
     </div>
   );

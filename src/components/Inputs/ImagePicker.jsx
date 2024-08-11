@@ -4,7 +4,14 @@ import { useRef } from "react";
 import { FaCamera } from "react-icons/fa6";
 import { LuLoader2 } from "react-icons/lu";
 
-export const ImagePicker = ({ uploading, imgSrc, onImgChanged, avw, avh }) => {
+export const ImagePicker = ({
+  uploading,
+  imgSrc,
+  onImgChanged,
+  avw,
+  avh,
+  top = 70,
+}) => {
   const fileInputRef = useRef(null);
   return (
     <div className="relative self-start">
@@ -18,7 +25,7 @@ export const ImagePicker = ({ uploading, imgSrc, onImgChanged, avw, avh }) => {
         pos="absolute"
         size="lg"
         color="black"
-        top={90}
+        top={top}
         right={10}
         onClick={() => {
           fileInputRef.current?.click?.();

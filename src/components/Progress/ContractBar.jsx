@@ -7,24 +7,33 @@ export const ContractBar = ({ item }) => {
     const today = dayjs();
     const start = dayjs(item?.start_date);
     const end = dayjs(item?.end_date);
-    const totalDuration = end.diff(start, "month");
-    const elapsedDuration = today.diff(start, "month");
-
+    const totalDuration = end.diff(start, "days");
+    const elapsedDuration = today.diff(start, "days");
     return Math.round((elapsedDuration / totalDuration) * 100);
   }, [item]);
 
+  const parsedProgress = useMemo(() => {
+    if (isNaN(progressValue)) {
+      return 100;
+    }
+    if (progressValue > 100) {
+      return 100;
+    }
+    return progressValue;
+  }, [progressValue]);
+
   const progressColor = useMemo(() => {
-    if (progressValue < 25) {
+    if (parsedProgress < 25) {
       return "famblue.4";
     }
-    if (progressValue < 50) {
+    if (parsedProgress < 50) {
       return "famgreen.6";
-    } else if (progressValue < 75) {
+    } else if (parsedProgress < 75) {
       return "famyellow.4";
     } else {
       return "famdeepred.6";
     }
-  }, [progressValue]);
+  }, [parsedProgress]);
 
   if (!item) {
     return <></>;
@@ -34,11 +43,11 @@ export const ContractBar = ({ item }) => {
     <div className="flex flex-col justify-center items-center gap-1">
       <div className="flex w-full justify-center items-center">
         <p className="text-center font-bold text-xs">
-          {progressValue.toString()} %
+          {parsedProgress.toString()} %
         </p>
       </div>
-      <div className="min-w-40">
-        <Progress value={progressValue} color={progressColor} size="md" />
+      <div className="min-w-24">
+        <Progress value={parsedProgress} color={progressColor} size="sm" />
       </div>
     </div>
   );
