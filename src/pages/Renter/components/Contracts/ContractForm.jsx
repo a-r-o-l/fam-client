@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   Button,
   Fieldset,
@@ -11,9 +11,6 @@ import {
   FaCalendarDay,
   FaRegMoneyBill1,
 } from "react-icons/fa6";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm } from "react-hook-form";
 import { DateInput } from "@mantine/dates";
 import { useGetBuildingsQuery } from "../../../../services/hooks/Building/useBuildingQuery";
 import { useGetApartmentsQuery } from "../../../../services/hooks/Apartment/useApartmentQuery";
@@ -127,6 +124,8 @@ export const ContractForm = ({ renter = null, disabled }) => {
   const onSubmit = async () => {
     const start_date = dayjs(dateField.getValue()).format("YYYY/MM/DD");
     const payload = {
+      value: valueField.getValue(),
+      months_amount: contractField.getValue(),
       apartment_id: parseInt(apartmentSelectField.getValue()),
       renter_id: renter?.id,
       months_upgrade: upgradeField.getValue(),
@@ -175,9 +174,9 @@ export const ContractForm = ({ renter = null, disabled }) => {
   ]);
 
   return (
-    <form
+    <div
       className="flex flex-1 flex-col justify-center items-end"
-      onSubmit={onSubmit}
+      // onSubmit={onSubmit}
     >
       <Fieldset
         legend="informacion de contrato"
@@ -286,11 +285,12 @@ export const ContractForm = ({ renter = null, disabled }) => {
             type="submit"
             loading={createContract.isPending}
             disabled={createContract.isPending || disabledSubmit}
+            onClick={onSubmit}
           >
             Crear
           </Button>
         )}
       </div>
-    </form>
+    </div>
   );
 };
