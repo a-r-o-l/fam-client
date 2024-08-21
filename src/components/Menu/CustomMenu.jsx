@@ -1,7 +1,7 @@
 import { ActionIcon, Divider, Menu } from "@mantine/core";
 import { EllipsisVertical } from "lucide-react";
 
-function CustomMenu({ title, options, redZone, icon = null }) {
+function CustomMenu({ title, options, icon = null }) {
   return (
     <Menu shadow="xl" width={250} position="bottom-start">
       <Menu.Target>
@@ -25,17 +25,16 @@ function CustomMenu({ title, options, redZone, icon = null }) {
         {options.map((option, index) => {
           if (option.divider) {
             return (
-              <>
+              <div key={index}>
                 <Divider my={10} />
                 <Menu.Item
-                  key={index}
                   onClick={option.onClick}
                   rightSection={option.icon}
                   color={option.color}
                 >
                   {option.label}
                 </Menu.Item>
-              </>
+              </div>
             );
           }
           return (

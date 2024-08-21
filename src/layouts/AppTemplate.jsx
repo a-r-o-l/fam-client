@@ -116,11 +116,11 @@ export const AppTemplate = () => {
           <div className="flex flex-1 justify-between items-center h-full px-10">
             <div className="flex justify-center items-center px-3 pb-2 pt-4 rounded-xl">
               <Image
-                src="./complex.png"
+                src="/logo.png"
                 fit="contain"
-                width={500}
-                height={500}
-                w={270}
+                width={300}
+                height={300}
+                w={160}
               />
             </div>
             <div>

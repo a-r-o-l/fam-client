@@ -1,9 +1,11 @@
 import { ActionIcon, Title, Table, useMantineColorScheme } from "@mantine/core";
-import { House, Plus } from "lucide-react";
-import { useState } from "react";
+import { Banknote, House, Plus, Users } from "lucide-react";
+import { useMemo, useState } from "react";
 import HouseModal from "./components/HouseModal";
 import { useGetHousesQuery } from "../../services/hooks/House/useHouseQuery";
 import HouseTr from "./components/HouseTr";
+import CustomFloatingIndicator from "../../components/CustomFloatingIndicator/CustomFloatingIndicator";
+import { useParams } from "react-router-dom";
 
 const headerItems = [
   { id: 1, label: "Imagen", align: "left" },
@@ -20,19 +22,49 @@ const headerItems = [
 ];
 
 function HouseScreen() {
+  const params = useParams();
+  const index = useMemo(() => {
+    if (params?.index) {
+      return parseInt(params.index);
+    }
+    return 0;
+  }, [params]);
   const { colorScheme } = useMantineColorScheme();
   const [selectedHouse, setSelectedHouse] = useState(null);
   const [houseModal, setHouseModal] = useState(false);
   const [houseToEdit, setHouseToEdit] = useState(null);
   const { data: houses, isLoading } = useGetHousesQuery();
 
+  const data = [
+    {
+      label: "Casas",
+      icon: <House size={18} />,
+      path: "/houses/0",
+      condition: 0,
+    },
+    {
+      label: "Inquilinos",
+      icon: <Users size={18} />,
+      path: "/houses/1",
+      condition: 1,
+    },
+    {
+      label: "Pagos",
+      icon: <Banknote size={18} />,
+      path: "/houses/2",
+      condition: 2,
+    },
+  ];
+
   return (
-    <div className="flex flex-1 flex-row overflow-hidden mt-20">
+    <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex justify-center w-full">
+        <CustomFloatingIndicator data={data} condition index={index} />
+      </div>
       <div className="flex flex-col px-10">
         <div className="flex w-full items-center justify-between px-3 py-3 rounded-lg mb-5 text-neutral-300">
           <div className="flex flex-row items-center gap-4">
-            <House size={20} />
-            <Title order={3}>Mis Casas</Title>
+            <Title order={3}>Casas</Title>
           </div>
           <ActionIcon
             size="lg"
