@@ -1,7 +1,7 @@
 import { http } from "./http";
 
 const getReservation = async (id) => {
-  const response = await http.get(`/reservations/${id}`);
+  const response = await http.get(`/reservation/${id}`);
   if (response?.data) {
     return response.data;
   } else {
@@ -11,7 +11,7 @@ const getReservation = async (id) => {
 
 const getReservations = async () => {
   let response;
-  response = await http.get(`/reservations`);
+  response = await http.get(`/reservation`);
   if (response?.data) {
     return response.data;
   } else {
@@ -20,7 +20,7 @@ const getReservations = async () => {
 };
 
 const createReservation = async (data) => {
-  const response = await http.post(`/reservations`, data);
+  const response = await http.post(`/reservation`, data);
   if (response?.data) {
     return response.data;
   } else {
@@ -29,7 +29,7 @@ const createReservation = async (data) => {
 };
 
 const updateReservation = async (id, data) => {
-  const response = await http.put(`/reservations/${id}`, data);
+  const response = await http.put(`/reservation/${id}`, data);
   if (response?.data) {
     return response.data;
   } else {
@@ -38,7 +38,7 @@ const updateReservation = async (id, data) => {
 };
 
 const deleteReservation = async (id) => {
-  const response = await http.delete(`/reservations/${id}`);
+  const response = await http.delete(`/reservation/${id}`);
   if (response?.data) {
     return response.data;
   } else {

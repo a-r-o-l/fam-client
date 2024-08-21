@@ -5,9 +5,8 @@ import {
   Select as MSelect,
   NumberInput,
 } from "@mantine/core";
+import { useField } from "@mantine/form";
 import {
-  FaBed,
-  FaBuilding,
   FaBusinessTime,
   FaCalendarDay,
   FaRegMoneyBill1,
@@ -22,59 +21,81 @@ import { textFormat } from "../../../../utils/textFormat";
 import dayjs from "dayjs";
 import { useCreateContractMutation } from "../../../../services/hooks/Contract/useContractMutation";
 import { toast } from "sonner";
-
-const schema = yup.object({
-  value: yup
-    .number()
-    .required("El monto es requerido")
-    .typeError("El monto es requerido"),
-  start_date: yup.string().required("La fecha de inicio es requerida"),
-  months_amount: yup
-    .number()
-    .required("El contrato es requerido")
-    .typeError("El contrato es requerido"),
-  months_upgrade: yup
-    .number()
-    .oneOf([0, 6, 12], "las actualizaciones son de 6 o 12 meses")
-    .typeError("mes invalido")
-    .default(0),
-});
-
-const defaultValues = {
-  value: "",
-  start_date: "",
-  months_amount: 0,
-  months_upgrade: 0,
-};
+import { Building, DoorClosed } from "lucide-react";
 
 export const ContractForm = ({ renter = null, disabled }) => {
-  const createContract = useCreateContractMutation();
+  const buildingSelectField = useField({
+    initialValue: "",
+    validateOnChange: true,
+    validate: (value) => {
+      if (!value) {
+        return "El edificio es requerido";
+      }
+    },
+  });
 
-  const [selectedBuilding, setSelectedBuilding] = useState("");
-  const [selectedApartment, setSelectedApartment] = useState("");
+  const apartmentSelectField = useField({
+    initialValue: "",
+    validateOnChange: true,
+    validate: (value) => {
+      if (!value) {
+        return "El departamento es requerido";
+      }
+    },
+  });
+
+  const valueField = useField({
+    initialValue: "",
+    validateOnChange: true,
+    validate: (value) => {
+      if (!value) {
+        return "El monto es requerido";
+      }
+    },
+  });
+
+  const dateField = useField({
+    initialValue: "",
+    validateOnChange: true,
+    validate: (value) => {
+      if (!value) {
+        return "La fecha es requerida";
+      }
+    },
+  });
+
+  const contractField = useField({
+    initialValue: "",
+    validateOnChange: true,
+    validate: (value) => {
+      if (!value) {
+        return "El contrato es requerido";
+      }
+    },
+  });
+
+  const upgradeField = useField({
+    initialValue: "",
+    validateOnChange: true,
+    validate: (value) => {
+      if (!value) {
+        return "La actualizacion es requerida";
+      }
+    },
+  });
+
+  const createContract = useCreateContractMutation();
 
   const { data: buildings } = useGetBuildingsQuery();
 
-  const { data: apartments, refetch } = useGetApartmentsQuery(
+  const { data: apartments } = useGetApartmentsQuery(
     {
-      BuildingId: selectedBuilding,
+      buildingId: buildingSelectField.getValue(),
     },
     {
-      enabled: !!selectedBuilding,
+      enabled: !!buildingSelectField.getValue(),
     }
   );
-
-  const {
-    reset,
-    setError,
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues,
-    mode: "onBlur",
-  });
 
   const buildingSelectData = useMemo(() => {
     if (buildings) {
@@ -90,36 +111,34 @@ export const ContractForm = ({ renter = null, disabled }) => {
   }, [buildings]);
 
   const apartmentSelectData = useMemo(() => {
+    if (!buildingSelectField.getValue()) {
+      return [];
+    }
     const data = apartments?.map((apartment) => {
       return {
         label: apartment.number,
         value: apartment?.id?.toString(),
-        disabled: !!apartment?.active_contract_id,
+        disabled: !!apartment?.active_contract_id || apartment.it_was_sold,
       };
     });
     return data || [];
-  }, [apartments]);
+  }, [apartments, buildingSelectField]);
 
-  const onSubmit = async (data) => {
-    if (!selectedApartment) {
-      return setError("apartment", { message: "El departamento es requerido" });
-    }
-    const start_date = dayjs(data.start_date).format("YYYY/MM/DD");
+  const onSubmit = async () => {
+    const start_date = dayjs(dateField.getValue()).format("YYYY/MM/DD");
     const payload = {
-      ...data,
-      apartment_id: parseInt(selectedApartment),
+      apartment_id: parseInt(apartmentSelectField.getValue()),
       renter_id: renter?.id,
-      months_upgrade: data.months_upgrade,
+      months_upgrade: upgradeField.getValue(),
       start_date,
       end_date: dayjs(start_date)
-        .add(data.months_amount, "months")
+        .add(contractField.getValue(), "months")
         .format("YYYY/MM/DD"),
     };
     try {
       createContract.mutate(payload, {
         onSuccess: () => {
           toast.success("Contrato creado correctamente");
-          reset(defaultValues);
         },
         onError: (error) => {
           if (error.response.status === 414) {
@@ -134,20 +153,31 @@ export const ContractForm = ({ renter = null, disabled }) => {
     }
   };
 
-  useEffect(() => {
-    refetch();
-  }, [selectedBuilding, refetch]);
-
-  useEffect(() => {
-    if (buildingSelectData) {
-      setSelectedBuilding(buildings[0]?.id.toString());
+  const disabledSubmit = useMemo(() => {
+    if (
+      buildingSelectField.error ||
+      apartmentSelectField.error ||
+      valueField.error ||
+      dateField.error ||
+      contractField.error ||
+      upgradeField.error
+    ) {
+      return true;
     }
-  }, [buildingSelectData, buildings]);
+    return false;
+  }, [
+    buildingSelectField,
+    apartmentSelectField,
+    valueField,
+    dateField,
+    contractField,
+    upgradeField,
+  ]);
 
   return (
     <form
       className="flex flex-1 flex-col justify-center items-end"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={onSubmit}
     >
       <Fieldset
         legend="informacion de contrato"
@@ -163,13 +193,8 @@ export const ContractForm = ({ renter = null, disabled }) => {
               disabled={disabled}
               withAsterisk
               data={buildingSelectData}
-              leftSection={<FaBuilding />}
+              leftSection={<Building />}
               label="Complejo"
-              value={selectedBuilding}
-              onChange={(e) => {
-                console.log(selectedBuilding);
-                setSelectedBuilding(e);
-              }}
               size="md"
               comboboxProps={{ shadow: "xl" }}
               styles={{
@@ -177,6 +202,7 @@ export const ContractForm = ({ renter = null, disabled }) => {
                   fontSize: "14px",
                 },
               }}
+              {...buildingSelectField.getInputProps()}
             />
           </div>
           <div className="w-1/4 h-20">
@@ -184,12 +210,8 @@ export const ContractForm = ({ renter = null, disabled }) => {
               disabled={disabled}
               withAsterisk
               data={apartmentSelectData}
-              leftSection={<FaBed />}
+              leftSection={<DoorClosed />}
               label="Depto"
-              value={selectedApartment}
-              onChange={(e) => {
-                setSelectedApartment(e);
-              }}
               size="md"
               comboboxProps={{ shadow: "xl" }}
               styles={() => {
@@ -199,91 +221,55 @@ export const ContractForm = ({ renter = null, disabled }) => {
                   },
                 };
               }}
+              {...apartmentSelectField.getInputProps()}
             />
           </div>
         </div>
         <div className="h-20">
-          <Controller
-            name="value"
-            control={control}
-            defaultValue={""}
-            render={({ field }) => (
-              <NumberInput
-                disabled={disabled}
-                withAsterisk
-                prefix="$"
-                thousandSeparator=" "
-                leftSectionPointerEvents="none"
-                leftSection={<FaRegMoneyBill1 />}
-                value={field.value}
-                onChange={field.onChange}
-                label="Monto"
-                error={errors?.value?.message}
-                errorMessage={errors?.value?.message}
-              />
-            )}
+          <NumberInput
+            disabled={disabled}
+            withAsterisk
+            prefix="$"
+            thousandSeparator=" "
+            leftSectionPointerEvents="none"
+            leftSection={<FaRegMoneyBill1 />}
+            label="Monto"
+            {...valueField.getInputProps()}
           />
         </div>
         <div className="w-full h-20">
-          <Controller
-            name="start_date"
-            control={control}
-            defaultValue={""}
-            render={({ field }) => (
-              <DateInput
-                disabled={disabled}
-                withAsterisk
-                valueFormat="DD/MM/YYYY"
-                label="Fecha de inicio"
-                leftSection={<FaCalendarDay />}
-                error={errors?.start_date?.message}
-                onChange={field.onChange}
-                value={field.value}
-              />
-            )}
+          <DateInput
+            disabled={disabled}
+            withAsterisk
+            valueFormat="DD/MM/YYYY"
+            label="Fecha de inicio"
+            leftSection={<FaCalendarDay />}
+            {...dateField.getInputProps()}
           />
         </div>
         <div className="flex flex-row w-full gap-10 items-center">
           <div className="w-full h-20">
-            <Controller
-              name="months_amount"
-              control={control}
-              render={({ field }) => (
-                <NumberInput
-                  disabled={disabled}
-                  withAsterisk
-                  clampBehavior="strict"
-                  min={0}
-                  max={36}
-                  leftSectionPointerEvents="none"
-                  leftSection={<FaBusinessTime />}
-                  value={field.value}
-                  onChange={field.onChange}
-                  label="Contrato"
-                  error={errors?.months_amount?.message}
-                  errorMessage={errors?.months_amount?.message}
-                />
-              )}
+            <NumberInput
+              disabled={disabled}
+              withAsterisk
+              clampBehavior="strict"
+              min={0}
+              max={36}
+              leftSectionPointerEvents="none"
+              leftSection={<FaBusinessTime />}
+              label="Contrato"
+              {...contractField.getInputProps()}
             />
           </div>
           <div className="w-full h-20">
-            <Controller
-              name="months_upgrade"
-              control={control}
-              render={({ field }) => (
-                <NumberInput
-                  disabled={disabled}
-                  min={0}
-                  max={12}
-                  leftSectionPointerEvents="none"
-                  leftSection={<FaBusinessTime />}
-                  value={field.value}
-                  onChange={field.onChange}
-                  label="Actualizacion de contrato"
-                  error={errors?.months_upgrade?.message}
-                  errorMessage={errors?.months_upgrade?.message}
-                />
-              )}
+            <NumberInput
+              disabled={disabled}
+              min={0}
+              max={12}
+              leftSectionPointerEvents="none"
+              leftSection={<FaBusinessTime />}
+              label="Actualizacion de contrato"
+              {...upgradeField.getInputProps()}
             />
           </div>
         </div>
@@ -296,9 +282,10 @@ export const ContractForm = ({ renter = null, disabled }) => {
             radius="xl"
             w={150}
             size="sm"
+            variant="outline"
             type="submit"
             loading={createContract.isPending}
-            disabled={createContract.isPending}
+            disabled={createContract.isPending || disabledSubmit}
           >
             Crear
           </Button>

@@ -17,44 +17,44 @@ const navigationConfig = [
     name: "Inicio",
     icon: Home,
   },
-  {
-    path: "/payments",
-    exact: true,
-    name: "Pagos",
-    icon: Banknote,
-  },
+  // {
+  //   path: "/payments",
+  //   exact: true,
+  //   name: "Pagos",
+  //   icon: Banknote,
+  // },
   {
     path: "/buildings",
     name: "Propiedades",
     icon: Building2,
     children: [
       {
-        path: "/buildings",
+        path: "/buildings/0",
         name: "Edificios",
         icon: Building,
       },
       {
-        path: "/houses",
+        path: "/houses/0",
         name: "Casas",
         icon: House,
       },
       {
-        path: "/lounges",
+        path: "/lounges/0",
         name: "Salones",
         icon: StoreIcon,
       },
       {
         path: "/apartments",
-        name: "Departamentos",
+        name: "Alquiler Diario",
         icon: DoorClosed,
       },
     ],
   },
-  {
-    path: "/renters",
-    name: "Inquilinos",
-    icon: Users,
-  },
+  // {
+  //   path: "/renters",
+  //   name: "Inquilinos",
+  //   icon: Users,
+  // },
 
   {
     path: "/options",

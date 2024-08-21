@@ -39,6 +39,7 @@ export const RenterRowItem = ({
           position="bottom-end"
           color={isRenting ? "green" : "red"}
           withBorder
+          zIndex={1}
         >
           <Avatar src={item.image_url} size="md" />
         </Indicator>

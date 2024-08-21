@@ -63,18 +63,21 @@ export const RentersTable = ({ renters, completeInfo }) => {
   };
 
   return (
-    <Table.ScrollContainer minWidth={900} type="native" h={650}>
+    <Table.ScrollContainer minWidth={900} type="native" h={550}>
       <Table
-        layout="fixed"
+        // layout="fixed"
         stickyHeader
-        striped="even"
+        // striped="even"
         verticalSpacing="sm"
         horizontalSpacing="sm"
         highlightOnHover
         align="left"
         withTableBorder
       >
-        <Table.Thead bg={colorScheme === "dark" ? "dark.9" : "gray.2"}>
+        <Table.Thead
+          bg={colorScheme === "dark" ? "dark.9" : "gray.2"}
+          style={{ top: -1, zIndex: 2 }}
+        >
           <Table.Tr>
             {headerItems.map((item) => {
               if (!completeInfo && item.id > 1 && item.id < 7) {

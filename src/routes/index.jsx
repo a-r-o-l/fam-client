@@ -10,8 +10,10 @@ import { LoginScreen } from "../pages/Login/LoginScreen";
 import { AnalyticsScreen } from "../pages/Analytics/AnalyticsScreen";
 import { AppTemplate } from "../layouts/AppTemplate";
 import Home from "../pages/Home/Home";
+import LoungeScreen from "../pages/Lounge/LoungeScreen";
 import NotFoundScreen from "../pages/NotFound/NotFoundScreen";
 import HouseScreen from "../pages/House/HouseScreen";
+import LoungeEventScreen from "../pages/Lounge/LoungeEventScreen/LoungeEventScreen";
 
 export const router = createBrowserRouter([
   {
@@ -27,7 +29,7 @@ export const router = createBrowserRouter([
         element: <PaymentsScreen />,
       },
       {
-        path: "/buildings",
+        path: "/buildings/:index",
         element: <BuildingScreen />,
       },
       {
@@ -63,12 +65,16 @@ export const router = createBrowserRouter([
         element: <SubscriptionSuccessScreen />,
       },
       {
-        path: "/houses",
+        path: "/houses/:index",
         element: <HouseScreen />,
       },
       {
-        path: "/lounges",
-        element: <div>lounges</div>,
+        path: "/lounges/:index",
+        element: <LoungeScreen />,
+      },
+      {
+        path: "/lounges/calendar/:id",
+        element: <LoungeEventScreen />,
       },
       {
         path: "/apartments",
