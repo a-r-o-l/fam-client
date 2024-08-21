@@ -54,7 +54,7 @@ export const HistoryScreen = () => {
   return (
     <div className="flex flex-col">
       <div className="flex flex-1 flex-col overflow-hidden relative">
-        <BackButton backTo={() => navigate("/renters")} />
+        <BackButton backTo={() => navigate("/buildings/1")} />
         <div className="flex flex-row justify-start items-center mt-20 gap-5">
           <Avatar src={renter?.image_url} size="xl" />
           <div className="flex flex-col gap-2">

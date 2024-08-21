@@ -18,7 +18,7 @@ export const RenterScreen = () => {
   return (
     <div className="flex flex-row gap-5">
       <div className="flex w-2/5 flex-col overflow-hidden relative">
-        <BackButton backTo={() => navigate("/renters")} />
+        <BackButton backTo={() => navigate("/buildings/1")} />
         <Card h="100%" className="flex justify-start mt-20" withBorder>
           <Text fw={900} size="xl" pl={20} pt={20}>
             Inquilino
